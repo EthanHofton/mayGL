@@ -13,7 +13,7 @@ ifeq ($(UNAME_S), Darwin)
 endif
 
 SRC = $(wildcard src/**/*.cpp) $(wildcard lib/stb_image/*.cpp)
-OBJ = $(addprefix $(BIN)/static/, $(notdir $(SRC:.cpp=.o)))
+OBJ = $(SRC:.cpp=.o)
 BIN = lib
 PROGRAM = mayGL
 
@@ -38,4 +38,4 @@ program: $(OBJ)
 	$(CC) -c $< -o $@ $(CXXFLAGS)
 
 clean:
-	rm -rf $(BIN)/static
+	rm -rf $(BIN)/static $(OBJ)
