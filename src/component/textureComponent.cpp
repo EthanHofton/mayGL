@@ -1,5 +1,5 @@
-#include <component/textureComponent.hpp>
-#include <entity/entity.hpp>
+#include <mayGL/component/textureComponent.hpp>
+#include <mayGL/entity/entity.hpp>
 
 namespace may
 {

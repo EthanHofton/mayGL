@@ -1,4 +1,4 @@
-#include <renderer/shader.hpp>
+#include <mayGL/renderer/shader.hpp>
 
 namespace may
 {

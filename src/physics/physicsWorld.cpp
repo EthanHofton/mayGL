@@ -1,4 +1,4 @@
-#include <physics/physicsWorld.hpp>
+#include <mayGL/physics/physicsWorld.hpp>
 
 namespace may
 {

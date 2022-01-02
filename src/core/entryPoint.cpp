@@ -1,4 +1,4 @@
-#include <core/entryPoint.hpp>
+#include <mayGL/core/entryPoint.hpp>
 
 int main(int argc, char** argv)
 {

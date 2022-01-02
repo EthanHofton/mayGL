@@ -1,5 +1,5 @@
-#include <component/textureAtlasComponent.hpp>
-#include <entity/entity.hpp>
+#include <mayGL/component/textureAtlasComponent.hpp>
+#include <mayGL/entity/entity.hpp>
 
 namespace may
 {

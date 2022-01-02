@@ -1,6 +1,6 @@
-#include <physics/colliderComponent.hpp>
-#include <entity/entity.hpp>
-#include <physics/collisions.hpp>
+#include <mayGL/physics/colliderComponent.hpp>
+#include <mayGL/entity/entity.hpp>
+#include <mayGL/physics/collisions.hpp>
 
 namespace may
 {

@@ -1,4 +1,4 @@
-#include <camera/camera3D.hpp>
+#include <mayGL/camera/camera3D.hpp>
 
 namespace may
 {

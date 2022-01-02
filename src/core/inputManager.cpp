@@ -1,4 +1,4 @@
-#include <core/inputManager.hpp>
+#include <mayGL/core/inputManager.hpp>
 
 namespace may
 {

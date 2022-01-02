@@ -1,4 +1,4 @@
-#include <core/window.hpp>
+#include <mayGL/core/window.hpp>
 
 namespace may
 {

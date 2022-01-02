@@ -1,6 +1,6 @@
-#include <physics/cubeCollider.hpp>
-#include <physics/collisions.hpp>
-#include <entity/entity.hpp>
+#include <mayGL/physics/cubeCollider.hpp>
+#include <mayGL/physics/collisions.hpp>
+#include <mayGL/entity/entity.hpp>
 
 namespace may
 {

@@ -1,5 +1,5 @@
-#include <physics/physicsBody.hpp>
-#include <entity/entity.hpp>
+#include <mayGL/physics/physicsBody.hpp>
+#include <mayGL/entity/entity.hpp>
 
 namespace may
 {

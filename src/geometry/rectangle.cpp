@@ -1,4 +1,4 @@
-#include <geometry/rectangle.hpp>
+#include <mayGL/geometry/rectangle.hpp>
 
 namespace may
 {

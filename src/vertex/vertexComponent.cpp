@@ -1,4 +1,4 @@
-#include <vertex/vertexComponent.hpp>
+#include <mayGL/vertex/vertexComponent.hpp>
 
 namespace may
 {

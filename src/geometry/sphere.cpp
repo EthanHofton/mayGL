@@ -1,4 +1,4 @@
-#include <geometry/sphere.hpp>
+#include <mayGL/geometry/sphere.hpp>
 
 namespace may
 {

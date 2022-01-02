@@ -3,8 +3,6 @@ UNAME_S = $(shell uname -s)
 CC = c++
 
 CXXFLAGS = -Werror -Wall -std=c++17 -Wc++11-extensions -Wvexing-parse -stdlib=libc++
-CXXFLAGS += -Ilib/glm/ -Ilib/spdlog/include/ -Ilib/rapidjson/include/ -Ilib/fmt/include/ -Ilib/glew/include/
-CXXFLAGS += -Ilib/SDL2/include/ -Ilib/stb_image/
 CXXFLAGS += -Iinclude/
 LDFLAGS = lib/glew/lib/libGLEW.a `sdl2-config --static-libs`
 
@@ -12,7 +10,7 @@ ifeq ($(UNAME_S), Darwin)
 	LDFLAGS += -framework OpenGL -framework IOKit -framework CoreVideo -framework Cocoa -framework CoreAudio
 endif
 
-SRC = $(wildcard src/**/*.cpp) $(wildcard lib/stb_image/*.cpp)
+SRC = $(wildcard src/**/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 BIN = lib
 PROGRAM = mayGL
@@ -30,6 +28,9 @@ libs:
 	cd lib/fmt && cmake . && make
 	cd lib/glew/auto && make && cd .. && make && make install
 	cd lib/SDL2 && mkdir -p build && cd build && cmake .. && make
+
+	mkdir -p include/GL/
+	cp -a lib/glew/include/GL/. include/GL/
 
 program: $(OBJ)
 	ar rcs $(BIN)/static/lib$(PROGRAM).a $^

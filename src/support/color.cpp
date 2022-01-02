@@ -1,4 +1,4 @@
-#include <support/color.hpp>
+#include <mayGL/support/color.hpp>
 
 namespace may
 {

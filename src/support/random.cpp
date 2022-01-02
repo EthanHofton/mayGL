@@ -1,4 +1,4 @@
-#include <support/random.hpp>
+#include <mayGL/support/random.hpp>
 
 namespace may
 {

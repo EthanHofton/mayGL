@@ -1,5 +1,5 @@
-#include <component/meshComponent.hpp>
-#include <entity/entity.hpp>
+#include <mayGL/component/meshComponent.hpp>
+#include <mayGL/entity/entity.hpp>
 
 namespace may
 {

@@ -1,4 +1,4 @@
-#include <geometry/cube.hpp>
+#include <mayGL/geometry/cube.hpp>
 
 namespace may
 {

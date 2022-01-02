@@ -1,5 +1,5 @@
-#include <component/colorComponent.hpp>
-#include <entity/entity.hpp>
+#include <mayGL/component/colorComponent.hpp>
+#include <mayGL/entity/entity.hpp>
 
 namespace may
 {

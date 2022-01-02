@@ -4,13 +4,6 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "lib/glm/",
-                "lib/spdlog/include/",
-                "lib/rapidjson/include/",
-                "lib/fmt/include/",
-                "lib/glew/include/",
-                "lib/SDL2/include/",
-                "lib/stb_image/",
                 "include/"
             ],
             "defines": [],

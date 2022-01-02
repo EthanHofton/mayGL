@@ -1,5 +1,5 @@
-#include <component/transformComponent.hpp>
-#include <entity/entity.hpp>
+#include <mayGL/component/transformComponent.hpp>
+#include <mayGL/entity/entity.hpp>
 
 namespace may
 {

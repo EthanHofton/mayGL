@@ -1,4 +1,4 @@
-#include <support/math.hpp>
+#include <mayGL/support/math.hpp>
 
 namespace may
 {

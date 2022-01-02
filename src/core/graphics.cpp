@@ -1,4 +1,4 @@
-#include <core/graphics.hpp>
+#include <mayGL/core/graphics.hpp>
 
 namespace may
 {
