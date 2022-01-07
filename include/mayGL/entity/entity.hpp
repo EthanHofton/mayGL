@@ -15,6 +15,7 @@
 #include "../physics/physicsBody.hpp"
 #include "../physics/sphereCollider.hpp"
 #include "../physics/cubeCollider.hpp"
+#include "../physics/plainCollider.hpp"
 
 namespace may
 {
@@ -112,6 +113,11 @@ namespace may
             { return getComponentType<physics::SphereCollider*, component::collider>(t_id); }
             std::vector<physics::SphereCollider*> getSphereColliders()
             { return getColliderComponents<physics::SphereCollider*, physics::sphere>(); }
+
+            physics::PlainCollider *getPlainCollider(std::string t_id)
+            { return getComponentType<physics::PlainCollider*, component::collider>(t_id); }
+            std::vector<physics::PlainCollider*> getPlainColliders()
+            { return getColliderComponents<physics::PlainCollider*, physics::plain>(); }
             // -- commonly used functions
             
         private:

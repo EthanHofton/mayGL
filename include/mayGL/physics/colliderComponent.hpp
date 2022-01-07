@@ -15,6 +15,7 @@ namespace may
         {
             sphere,
             cube,
+            plain,
             polygon,
             mesh // maybe
         };

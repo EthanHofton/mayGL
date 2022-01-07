@@ -55,5 +55,51 @@ namespace may
         {
             return false;
         }
+
+        bool plainVsPlain(PlainCollider *t_1, PlainCollider *t_2, Collision &t_c)
+        {
+            return false;
+        }
+
+        bool cubeVsPlain(CubeCollider *t_1, PlainCollider *t_2, Collision &t_c)
+        {
+            return plainVsCube(t_2, t_1, t_c);
+        }
+
+        bool plainVsCube(PlainCollider *t_1, CubeCollider *t_2, Collision &t_c)
+        {
+            return false;
+        }
+
+        bool plainVsSphere(PlainCollider *t_1, SphereCollider *t_2, Collision &t_c)
+        {
+            glm::vec3 spherePos = t_2->getTransform()->getPos();
+
+            if (t_1->smallestDistToPoint(spherePos) > t_2->getRadius())
+            {
+                return false;
+            }
+
+            glm::vec3 posOnPlain = t_1->closestPointToPlain(spherePos);
+
+            if (!t_1->pointInPlain(posOnPlain))
+            {
+                return false;
+            }
+
+
+            glm::vec3 posOnSphere = t_2->closesPointToSphere(posOnPlain);
+            t_c.m_c1 = t_1;
+            t_c.m_c2 = t_2;
+            t_c.m_e2Contact = posOnPlain;
+            t_c.m_e1Contact = posOnSphere;
+
+            return true;
+        }
+
+        bool sphereVsPlain(SphereCollider *t_1, PlainCollider *t_2, Collision &t_c)
+        {
+            return plainVsSphere(t_2, t_1, t_c);
+        }
     }
 }

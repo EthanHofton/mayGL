@@ -33,6 +33,8 @@ namespace may
                 return cubeVsSphere(this, static_cast<SphereCollider*>(t_other), t_m);
             case cube:
                 return cubeVsCube(this, static_cast<CubeCollider*>(t_other), t_m);
+            case plain:
+                return cubeVsPlain(this, static_cast<PlainCollider*>(t_other), t_m);
             default:
                 return {};
             }

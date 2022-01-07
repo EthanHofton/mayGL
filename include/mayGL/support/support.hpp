@@ -4,5 +4,6 @@
 #include "math.hpp"
 #include "color.hpp"
 #include "random.hpp"
+#include "geometry.hpp"
 
 #endif

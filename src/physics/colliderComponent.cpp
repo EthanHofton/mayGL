@@ -21,6 +21,7 @@ namespace may
             m_colliderMesh->loadShader("collider.vertex", "collider.fragment");
 
             getParent()->addComponent(m_colliderMesh);
+            m_transform->addMesh(m_colliderMesh->getId());
         }
 
         void Collider::showCollider(bool t_showCollider)
@@ -39,6 +40,8 @@ namespace may
             } else if (m_colliderType == cube && t_other->getColliderType() == cube) {
                 return cubeVsCube(static_cast<CubeCollider*>(this), static_cast<CubeCollider*>(t_other), t_m);
             } else if (m_colliderType == cube && t_other->getColliderType() == sphere) {
+                return cubeVsSphere(static_cast<CubeCollider*>(this), static_cast<SphereCollider*>(t_other), t_m);
+            } else if (m_colliderType == plain && t_other->getColliderType() == sphere) {
                 return cubeVsSphere(static_cast<CubeCollider*>(this), static_cast<SphereCollider*>(t_other), t_m);
             }
 
