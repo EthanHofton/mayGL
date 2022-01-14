@@ -6,7 +6,7 @@
 
 #define FMT_HEADER_ONLY
 #include <spdlog/spdlog.h>
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "config.hpp"
 
