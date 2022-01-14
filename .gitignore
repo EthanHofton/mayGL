@@ -1,0 +1,13 @@
+# ignore object files
+src/**/*.o
+
+# ignore the static libary
+lib/static/
+lib/static/*.a
+
+#ignore .DS_Store
+.DS_Store
+**/.DS_Store
+
+#ingnore .vscode
+.vscode/

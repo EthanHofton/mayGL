@@ -60,6 +60,8 @@ namespace may
         void ColorComponent::addMesh(std::string t_meshId)
         {
             m_meshes.push_back(getParent()->getMeshComponent(t_meshId));
+
+            updateColor();
         }
 
         void ColorComponent::addMeshes(std::vector<std::string> t_meshIds)
@@ -68,12 +70,16 @@ namespace may
             {
                 addMesh(meshId);
             }
+
+            updateColor();
         }
 
         void ColorComponent::addAllMeshes()
         {
             m_meshes.clear();
             m_meshes = getParent()->getMeshComponents();
+
+            updateColor();
         }
 
         void ColorComponent::removeMesh(std::string t_meshId)
@@ -93,6 +99,8 @@ namespace may
             {
                 m_meshes.erase(m_meshes.begin() + index);
             }
+
+            updateColor();
         }
 
         void ColorComponent::removeAllMeshes()
