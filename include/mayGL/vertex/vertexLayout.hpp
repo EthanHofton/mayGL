@@ -6,7 +6,7 @@
 
 #include "vertexComponent.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace vertex
     {

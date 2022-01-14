@@ -1,7 +1,7 @@
 #include <mayGL/component/textureComponent.hpp>
 #include <mayGL/entity/entity.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace component
     {

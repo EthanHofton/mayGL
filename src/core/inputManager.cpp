@@ -1,6 +1,6 @@
 #include <mayGL/core/inputManager.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace core
     {

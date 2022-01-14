@@ -3,7 +3,7 @@
 
 #include "renderBatch.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

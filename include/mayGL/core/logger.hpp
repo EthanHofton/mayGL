@@ -10,7 +10,7 @@
 
 #include "config.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace logger
     {
@@ -127,22 +127,22 @@ namespace may
             std::shared_ptr<spdlog::logger> m_clientConsoleLogger;
         };
     }
+
+    // core logger macros
+    #define CORE_TRACE(...) mayGL::logger::Logger::instance()->coreTrace(__VA_ARGS__)
+    #define CORE_DEBUG(...) mayGL::logger::Logger::instance()->coreDebug(__VA_ARGS__)
+    #define CORE_INFO(...) mayGL::logger::Logger::instance()->coreInfo(__VA_ARGS__)
+    #define CORE_WARN(...) mayGL::logger::Logger::instance()->coreWarn(__VA_ARGS__)
+    #define CORE_ERROR(...) mayGL::logger::Logger::instance()->coreError(__VA_ARGS__)
+    #define CORE_CRITICAL(...) mayGL::logger::Logger::instance()->coreCritical(__VA_ARGS__)
+
+    // client logger macros
+    #define APP_TRACE(...) mayGL::logger::Logger::instance()->trace(__VA_ARGS__)
+    #define APP_DEBUG(...) mayGL::logger::Logger::instance()->debug(__VA_ARGS__)
+    #define APP_INFO(...) mayGL::logger::Logger::instance()->info(__VA_ARGS__)
+    #define APP_WARN(...) mayGL::logger::Logger::instance()->warn(__VA_ARGS__)
+    #define APP_ERROR(...) mayGL::logger::Logger::instance()->error(__VA_ARGS__)
+    #define APP_CRITICAL(...) mayGL::logger::Logger::instance()->critical(__VA_ARGS__)
 }
-
-// core logger macros
-#define CORE_TRACE(...) may::logger::Logger::instance()->coreTrace(__VA_ARGS__)
-#define CORE_DEBUG(...) may::logger::Logger::instance()->coreDebug(__VA_ARGS__)
-#define CORE_INFO(...) may::logger::Logger::instance()->coreInfo(__VA_ARGS__)
-#define CORE_WARN(...) may::logger::Logger::instance()->coreWarn(__VA_ARGS__)
-#define CORE_ERROR(...) may::logger::Logger::instance()->coreError(__VA_ARGS__)
-#define CORE_CRITICAL(...) may::logger::Logger::instance()->coreCritical(__VA_ARGS__)
-
-// client logger macros
-#define APP_TRACE(...) may::logger::Logger::instance()->trace(__VA_ARGS__)
-#define APP_DEBUG(...) may::logger::Logger::instance()->debug(__VA_ARGS__)
-#define APP_INFO(...) may::logger::Logger::instance()->info(__VA_ARGS__)
-#define APP_WARN(...) may::logger::Logger::instance()->warn(__VA_ARGS__)
-#define APP_ERROR(...) may::logger::Logger::instance()->error(__VA_ARGS__)
-#define APP_CRITICAL(...) may::logger::Logger::instance()->critical(__VA_ARGS__)
 
 #endif

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <GL/glew.h>
 
-namespace may
+namespace mayGL
 {
     namespace vertex
     {

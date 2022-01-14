@@ -5,7 +5,7 @@
 #include "../core/inputManager.hpp"
 #include "../core/timer.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

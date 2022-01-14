@@ -17,7 +17,7 @@
 #include "../vertex/vertexLayout.hpp"
 #include "../core/config.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

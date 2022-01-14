@@ -1,6 +1,6 @@
 #include <mayGL/physics/physicsWorld.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace physics
     {

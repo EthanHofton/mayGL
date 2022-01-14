@@ -16,7 +16,7 @@
 #include "logger.hpp"
 #include "config.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace core
     {

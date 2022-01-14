@@ -17,7 +17,7 @@
 #include "../physics/cubeCollider.hpp"
 #include "../physics/plainCollider.hpp"
 
-namespace may
+namespace mayGL
 {
     enum memory_types
     {

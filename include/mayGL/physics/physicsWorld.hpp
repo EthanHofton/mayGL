@@ -9,7 +9,7 @@
 #include "physicsBody.hpp"
 #include "collisionManifold.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace physics
     {

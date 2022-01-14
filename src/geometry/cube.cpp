@@ -1,6 +1,6 @@
 #include <mayGL/geometry/cube.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace geometry
     {

@@ -1,6 +1,6 @@
 #include <mayGL/camera/camera2D.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

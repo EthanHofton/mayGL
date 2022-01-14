@@ -4,7 +4,7 @@
 #include "colliderComponent.hpp"
 #include "../support/support.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace physics
     {

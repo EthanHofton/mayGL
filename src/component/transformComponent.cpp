@@ -1,7 +1,7 @@
 #include <mayGL/component/transformComponent.hpp>
 #include <mayGL/entity/entity.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace component
     {

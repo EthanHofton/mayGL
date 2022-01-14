@@ -1,6 +1,6 @@
 #include <mayGL/core/timer.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace core
     {

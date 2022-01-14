@@ -7,7 +7,7 @@
 #include <random>
 #include <unistd.h>
 
-namespace may
+namespace mayGL
 {
     namespace random
     {

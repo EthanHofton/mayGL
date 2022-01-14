@@ -7,7 +7,7 @@
 
 #include <glm/glm.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace color
     {

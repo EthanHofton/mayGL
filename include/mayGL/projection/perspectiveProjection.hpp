@@ -3,7 +3,7 @@
 
 #include "baseProjection.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

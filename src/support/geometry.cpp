@@ -1,6 +1,6 @@
 #include <mayGL/support/geometry.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace geometry
     {

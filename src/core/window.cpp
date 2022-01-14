@@ -1,6 +1,6 @@
 #include <mayGL/core/window.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace core
     {

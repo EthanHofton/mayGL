@@ -4,7 +4,7 @@
 #include "../component/transformComponent.hpp"
 #include <glm/glm.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace physics
     {

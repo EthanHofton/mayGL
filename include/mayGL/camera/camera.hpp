@@ -9,7 +9,7 @@
 #include "../entity/entity.hpp"
 #include "../component/transformComponent.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

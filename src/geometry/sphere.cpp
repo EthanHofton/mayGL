@@ -1,6 +1,6 @@
 #include <mayGL/geometry/sphere.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace geometry
     {

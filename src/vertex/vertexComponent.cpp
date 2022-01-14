@@ -1,6 +1,6 @@
 #include <mayGL/vertex/vertexComponent.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace vertex
     {

@@ -1,6 +1,6 @@
 #include <mayGL/support/color.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace color
     {

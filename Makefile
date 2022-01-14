@@ -24,8 +24,6 @@ dirs:
 	mkdir -p $(BIN)/static
 
 libs:
-	cd lib/spdlog && cmake . && make
-	cd lib/fmt && cmake . && make
 	cd lib/glew/auto && make && cd .. && make && make install
 	cd lib/SDL2 && mkdir -p build && cd build && cmake .. && make
 

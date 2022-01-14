@@ -5,7 +5,7 @@
 #include <chrono>
 #include "logger.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace core
     {

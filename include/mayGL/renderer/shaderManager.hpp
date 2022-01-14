@@ -6,7 +6,7 @@
 
 #include "shader.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

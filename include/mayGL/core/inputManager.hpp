@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>
 #include "logger.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace core
     {

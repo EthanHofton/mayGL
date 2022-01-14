@@ -7,7 +7,7 @@
 #include "physicsBody.hpp"
 #include "../component/transformComponent.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace physics
     {

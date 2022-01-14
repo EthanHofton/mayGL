@@ -1,6 +1,6 @@
 #include <mayGL/projection/perspectiveProjection.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

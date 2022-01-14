@@ -2,7 +2,7 @@
 #include <mayGL/entity/entity.hpp>
 #include <mayGL/physics/collisions.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace physics
     {

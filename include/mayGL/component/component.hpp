@@ -4,7 +4,7 @@
 #include <iostream>
 #include "../core/logger.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace entity
     {

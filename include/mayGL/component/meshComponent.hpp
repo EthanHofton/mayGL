@@ -8,7 +8,7 @@
 #include "../vertex/vertexLayout.hpp"
 #include "../renderer/shaderManager.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace component
     {

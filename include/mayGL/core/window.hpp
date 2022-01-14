@@ -11,7 +11,7 @@
 #include "../entity/entity.hpp"
 #include "../renderer/renderer.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace core
     {

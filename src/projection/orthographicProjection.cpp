@@ -1,6 +1,6 @@
 #include <mayGL/projection/orthographicProjection.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

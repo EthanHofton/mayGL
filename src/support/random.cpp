@@ -1,6 +1,6 @@
 #include <mayGL/support/random.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace random
     {

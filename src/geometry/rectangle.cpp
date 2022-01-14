@@ -1,6 +1,6 @@
 #include <mayGL/geometry/rectangle.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace geometry
     {

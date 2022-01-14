@@ -8,7 +8,7 @@
 
 #include "../core/config.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

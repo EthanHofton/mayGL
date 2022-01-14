@@ -5,7 +5,7 @@
 #include "../component/meshComponent.hpp"
 #include "../component/transformComponent.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace geometry
     {

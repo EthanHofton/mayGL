@@ -3,7 +3,7 @@
 
 #include "camera.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

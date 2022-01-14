@@ -9,7 +9,7 @@
 
 using namespace rapidjson;
 
-namespace may
+namespace mayGL
 {
     namespace config
     {

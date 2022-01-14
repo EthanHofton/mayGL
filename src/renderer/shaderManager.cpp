@@ -1,6 +1,6 @@
 #include <mayGL/renderer/shaderManager.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace renderer
     {

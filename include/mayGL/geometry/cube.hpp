@@ -3,7 +3,7 @@
 
 #include "../entity/entity.hpp"
 
-namespace may
+namespace mayGL
 {
     namespace geometry
     {

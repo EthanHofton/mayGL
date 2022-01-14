@@ -1,6 +1,6 @@
 #include <mayGL/support/math.hpp>
 
-namespace may
+namespace mayGL
 {
     namespace math
     {
