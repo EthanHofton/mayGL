@@ -51,6 +51,8 @@ namespace mayGL
             void addAllMeshes();
             void removeMesh(std::string t_meshId);
             void removeAllMeshes();
+
+            void imguiComponentInspector() override;
             
             void update() override;
             

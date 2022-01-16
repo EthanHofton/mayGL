@@ -19,7 +19,9 @@ namespace mayGL
             m_active = true;
             m_parent = nullptr;
             s_allEntites[m_id] = this;
+            m_entityUID = s_entityCount;
             s_entityCount++;
+            m_showImguiInspector = false;
             
             CORE_INFO("entity with id '{0}' created", m_id);
             CORE_DEBUG("all entites list size: {0}", s_allEntites.size());
@@ -213,6 +215,79 @@ namespace mayGL
                 {
                     component->update();
                 }
+            }
+        }
+
+        void Entity::imguiInspector()
+        {
+            if (m_showImguiInspector)
+            {
+                std::string windowName = "inspector: "+ m_id +"###" + std::to_string(m_entityUID);
+                ImGui::Begin(windowName.c_str(), &m_showImguiInspector);
+
+                ImGui::PushItemWidth(ImGui::GetFontSize() * -10);
+
+                // display entity ID
+                std::string idCopy = m_id;
+                if (ImGui::InputTextWithHint("Entity ID", "Enter entity id", &idCopy, ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    if (idCopy != m_id)
+                    {
+                        entityId(idCopy);
+                    }
+                }
+
+                ImGui::LabelText((m_active) ? "True" : "False", "m_active:");
+                if (hasParent())
+                {
+                    ImGui::LabelText("", "m_parent:");
+                    ImGui::SameLine();
+                    if (ImGui::Button(m_parent->getEntityId().c_str()))
+                    {
+                        m_parent->shouldShowImguiInspector(true);
+                    }
+                } else {
+                    ImGui::LabelText("nullptr", "m_parent:");
+                }
+
+                ImGui::LabelText(std::to_string(m_entityUID).c_str(), "m_entityUID:");
+
+                customImguiProperties();
+                
+                ImGui::AlignTextToFramePadding();
+                bool componetsCollapsed = ImGui::TreeNodeEx("Components", ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+                ImGui::SameLine(ImGui::GetWindowWidth() - 65);
+                ImGui::Text("%lu", m_components.size());
+                if (componetsCollapsed)
+                {
+                    for (auto component : m_components)
+                    {
+                        if (ImGui::CollapsingHeader(component->getId().c_str()))
+                        {
+                            component->imguiComponentInspector();
+                        }
+                    }
+                }
+
+                ImGui::AlignTextToFramePadding();
+                bool childrenCollapsed = ImGui::TreeNode("Children");
+                ImGui::SameLine(ImGui::GetWindowWidth() - 65);
+                ImGui::Text("%lu", m_children.size());
+                if (childrenCollapsed)
+                {
+                    for (int i = 0; i < m_children.size(); i++)
+                    {
+                        ImGui::TreeNodeEx((int *)(intptr_t)i, ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet, "%s", m_children[i]->getEntityId().c_str());
+                        ImGui::SameLine(ImGui::GetWindowWidth() - 85);
+                        if (ImGui::SmallButton("Inspect"))
+                        {
+                            m_children[i]->shouldShowImguiInspector(true);
+                        }
+                    }
+                    ImGui::TreePop();
+                }
+
+                ImGui::End();
             }
         }
     }

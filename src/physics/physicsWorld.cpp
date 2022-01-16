@@ -204,5 +204,10 @@ namespace mayGL
             t_c.m_c1->getTransform()->translate(-(correction * a_invMass));
             t_c.m_c2->getTransform()->translate( (correction * b_invMass));
         }
+
+        void PhysicsWorld::customImguiProperties()
+        {
+            ImGui::Text("Hello world from physics world class");
+        }
     }
 }

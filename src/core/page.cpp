@@ -34,5 +34,62 @@ namespace mayGL
                 }
             }
         }
+
+        void Page::imguiShowScene()
+        {
+            std::string pageTitle = m_pageId + ": Scene";
+            ImGui::Begin(pageTitle.c_str());
+
+            ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
+
+            for (int i = 0; i < getEntites().size(); i++)
+            {
+                if (!getEntites()[i]->hasParent())
+                {
+                    addEntityPlaceholder(getEntites()[i], i);
+                }
+            }
+
+            ImGui::End();
+
+            for (auto entity : getEntites())
+            {
+                entity->imguiInspector();
+            }
+        }
+
+        void Page::addEntityPlaceholder(entity::Entity *t_e, int t_c)
+        {
+            ImGui::PushID(t_c);
+
+            bool nodeOpen = false;
+            if (t_e->hasChildren())
+            {
+                nodeOpen = ImGui::TreeNode((int *)(intptr_t)t_c, "%s", t_e->getEntityId().c_str());
+            } else {
+                ImGui::TreeNodeEx((int *)(intptr_t)t_c, ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet, "%s", t_e->getEntityId().c_str());
+            }
+
+            ImGui::SameLine(ImGui::GetWindowWidth() - 65);
+            if (ImGui::SmallButton("Inspect"))
+            {
+                t_e->shouldShowImguiInspector(true);
+            }
+
+            if (nodeOpen)
+            {
+                for (int i = 0; i < t_e->getChildren().size(); i++)
+                {
+                    ImGui::PushID(i);
+                    addEntityPlaceholder(t_e->getChildren()[0], i);
+                    ImGui::PopID();
+                }
+                
+                ImGui::TreePop();
+            } 
+
+            ImGui::PopID();
+        }
+        
     }
 }

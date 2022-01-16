@@ -34,6 +34,7 @@ namespace mayGL
             inline void GravityAffected(bool t_g) { m_gravityAffected = t_g; }
 
             void update() override;
+            void customImguiProperties() override;
 
         private:
 

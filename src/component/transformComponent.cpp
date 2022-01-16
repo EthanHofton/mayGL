@@ -245,5 +245,10 @@ namespace mayGL
                 }
             }
         }
+
+        void Transform::imguiComponentInspector()
+        {
+            ImGui::Text("Derrived Transform component");
+        }
     }
 }

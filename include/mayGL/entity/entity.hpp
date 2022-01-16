@@ -5,6 +5,9 @@
 #include <vector>
 #include <map>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
+
 #include "../core/logger.hpp"
 #include "../component/component.hpp"
 #include "../component/meshComponent.hpp"
@@ -56,9 +59,15 @@ namespace mayGL
             void removeComponent(std::string t_id, memory_types t_memoryType = strong);
             bool hasComponent(component::component_types t_type);
             bool hasComponent(std::string t_id);
+
+            inline void shouldShowImguiInspector(bool t_b) { m_showImguiInspector = t_b; }
+            inline bool showingImguiInspector() { return m_showImguiInspector; }
             
             void updateComponents();
             inline virtual void update() {}
+
+            void imguiInspector();
+            virtual void customImguiProperties() {}
             
         private:
             
@@ -142,9 +151,12 @@ namespace mayGL
             Entity *m_parent;
             std::vector<Entity*> m_children;
             std::string m_id;
+            int m_entityUID;
             
             static int s_entityCount;
-            static std::map<std::string, Entity*> s_allEntites;            
+            static std::map<std::string, Entity*> s_allEntites;
+
+            bool m_showImguiInspector;     
         };
     }
 }

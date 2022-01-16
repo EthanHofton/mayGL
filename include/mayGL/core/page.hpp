@@ -5,6 +5,9 @@
 #include <map>
 #include <SDL2/SDL.h>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
+
 #include "logger.hpp"
 #include "../entity/entity.hpp"
 
@@ -40,7 +43,15 @@ namespace mayGL
                 CORE_INFO("entity with id '{0}' added to page with id '{1}'", t_e->getEntityId(), m_pageId);
             }
             void updateEntities();
+
+            inline std::vector<entity::Entity*> getEntites() { return m_entities; }
+
+            void imguiShowScene();
             
+        private:
+
+            void addEntityPlaceholder(entity::Entity *t_e, int t_c);
+
         private:
             
             std::string m_pageId;
