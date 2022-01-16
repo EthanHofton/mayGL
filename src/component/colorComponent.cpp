@@ -33,28 +33,42 @@ namespace mayGL
 
         void ColorComponent::setAlpha(float t_alpha)
         {
-            m_color.a = t_alpha;
+            if (m_color.a != t_alpha)
+            {
+                m_color.a = t_alpha;
 
-            updateColor();
+                updateColor();
+            }
         }
 
         void ColorComponent::setRGB(glm::vec3 t_rgb)
         {
-            m_color = glm::vec4(t_rgb, m_color.a);
+            if (glm::vec3(m_color) != t_rgb)
+            {
+                m_color = glm::vec4(t_rgb, m_color.a);
 
-            updateColor();
+                updateColor();
+            }
         }
 
         void ColorComponent::setColor(glm::vec4 t_color)
         {
-            m_color = t_color;
+            if (m_color != t_color)
+            {
+                m_color = t_color;
 
-            updateColor();
+                updateColor();
+            }
         }
 
         void ColorComponent::setColor(std::string t_hex, float t_alpha)
         {
-            m_color = color::hexToRgba(t_hex, t_alpha);
+            if (m_color != color::hexToRgba(t_hex, t_alpha))
+            {
+                m_color = color::hexToRgba(t_hex, t_alpha);
+
+                updateColor();
+            }
         }
 
         void ColorComponent::addMesh(std::string t_meshId)
