@@ -41,6 +41,11 @@ namespace mayGL
         
         Graphics::~Graphics()
         {
+            // imgui cleanup
+            CORE_INFO("Cleaning up imGui");
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplSDL2_Shutdown();
+
             deleteContext();
             destroyWindow();
             
@@ -87,6 +92,15 @@ namespace mayGL
             
             // log context was created succsuefuly
             CORE_INFO("OpenGL context created");
+
+            // Setup imGui
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGuiIO& io = ImGui::GetIO(); (void)io;
+            ImGui::StyleColorsDark();
+            ImGui_ImplSDL2_InitForOpenGL(m_window, m_context);
+            ImGui_ImplOpenGL3_Init("#version 400");
+            CORE_INFO("ImGui initalised");
             
             // set glew experimental to true to use full features
             glewExperimental = GL_TRUE;

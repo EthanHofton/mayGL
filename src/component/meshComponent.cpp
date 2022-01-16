@@ -61,17 +61,17 @@ namespace mayGL
             m_modelVertices = malloc(m_verticesSize);
             memcpy(m_modelVertices, m_worldVertices, m_verticesSize);
             
-            if (getParent()->hasTextureAtlasComponent())
+            if (getParent()->hasComponent(component::textureAtlas))
             {
-                for (auto component : getParent()->getTextureAtlasComponents())
+                for (auto component : getParent()->getComponents<TextureAtlas, component::textureAtlas>())
                 {
                     component->setTextureCoords();
                 }
             }
 
-            if (getParent()->hasColorComponent())
+            if (getParent()->hasComponent(component::color))
             {
-                for (auto component : getParent()->getColorComponents())
+                for (auto component : getParent()->getComponents<ColorComponent, component::color>())
                 {
                     component->updateColor();
                 }
@@ -96,7 +96,7 @@ namespace mayGL
 
         void Mesh::setTexture(std::string t_textureId)
         {
-            m_texture = getParent()->getTextureComponent(t_textureId);
+            m_texture = getParent()->getComponent<Texture, component::texture>(t_textureId);
         }
     }
 }

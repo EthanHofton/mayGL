@@ -38,6 +38,12 @@ namespace mayGL
 
             inline std::string getId() { return m_id; }
             inline component_types getType() { return m_type; }
+
+            template<typename T>
+            T* as()
+            {
+                return static_cast<T*>(this);
+            }
             
             virtual void update() = 0;
             

@@ -59,7 +59,7 @@ namespace mayGL
 
         void ColorComponent::addMesh(std::string t_meshId)
         {
-            m_meshes.push_back(getParent()->getMeshComponent(t_meshId));
+            m_meshes.push_back(getParent()->getComponent<Mesh, component::mesh>(t_meshId));
 
             updateColor();
         }
@@ -77,7 +77,7 @@ namespace mayGL
         void ColorComponent::addAllMeshes()
         {
             m_meshes.clear();
-            m_meshes = getParent()->getMeshComponents();
+            m_meshes = getParent()->getComponents<Mesh, component::mesh>();
 
             updateColor();
         }

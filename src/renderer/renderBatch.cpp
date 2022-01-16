@@ -31,12 +31,12 @@ namespace mayGL
         
         void RenderBatch::push(entity::Entity *t_e)
         {
-            if (!t_e->hasMeshComponent())
+            if (!t_e->hasComponent(component::mesh))
             {
                 return;
             }
 
-            for (auto mesh : t_e->getMeshComponents())
+            for (auto mesh : t_e->getComponents<component::Mesh, component::mesh>())
             {
                 if (!mesh->isVisable())
                 {

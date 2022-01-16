@@ -72,20 +72,20 @@ namespace mayGL
             addComponent(new component::Mesh(this, m_meshId, vLayout, GL_TRIANGLES));
             addComponent(new component::Transform(this, m_meshTransformId));
             
-            getMeshComponent(m_meshId)->setVertices((void*)&m_vertexData[0], (int)(sizeof(sphere_vertex)*m_vertexData.size()));
-            getMeshComponent(m_meshId)->setIndices((void*)&m_indexData[0], (int)(sizeof(unsigned int)*m_indexData.size()));
-            getMeshComponent(m_meshId)->loadShader("geomerty/sphere/sphere.vertex", "geomerty/sphere/sphere.fragment");
-            getTransformComponent(m_meshTransformId)->addMesh(m_meshId);
+            getSphereMesh()->setVertices((void*)&m_vertexData[0], (int)(sizeof(sphere_vertex)*m_vertexData.size()));
+            getSphereMesh()->setIndices((void*)&m_indexData[0], (int)(sizeof(unsigned int)*m_indexData.size()));
+            getSphereMesh()->loadShader("geomerty/sphere/sphere.vertex", "geomerty/sphere/sphere.fragment");
+            getSphereMeshTransform()->addMesh(m_meshId);
         }
 
         component::Mesh *Sphere::getSphereMesh()
         {
-            return getMeshComponent(m_meshId);
+            return getComponent<component::Mesh, component::mesh>(m_meshId);
         }
 
         component::Transform *Sphere::getSphereMeshTransform()
         {
-            return getTransformComponent(m_meshTransformId);
+            return getComponent<component::Transform, component::transform>(m_meshTransformId);
         }
     }
 }

@@ -143,13 +143,13 @@ namespace mayGL
             {
                 if (e1->isActive())
                 {
-                    for (auto c1 : e1->getColliders())
+                    for (auto c1 : e1->getComponents<Collider, component::collider>())
                     {
                         for (auto e2 : m_physicsEntites)
                         {
                             if (e2->isActive() && e1 != e2)
                             {
-                                for (auto c2 : e2->getColliders())
+                                for (auto c2 : e2->getComponents<Collider, component::collider>())
                                 {
                                     Collision collisionManifold;
                                     if (c1->testCollision(c2, collisionManifold))
@@ -173,7 +173,7 @@ namespace mayGL
                 // intergrate
                 if (e->isActive())
                 {
-                    for (auto body : e->getPhysicsBodys())
+                    for (auto body : e->getComponents<PhysicsBody, component::physicsBody>())
                     {
                         intergrate(body);
                     }

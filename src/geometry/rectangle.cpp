@@ -31,20 +31,20 @@ namespace mayGL
             addComponent(new component::Mesh(this, m_meshId, vLayout, GL_TRIANGLES));
             addComponent(new component::Transform(this, m_meshTransformId));
             
-            getMeshComponent(m_meshId)->setVertices((void*)&m_vertexData[0], (int)(sizeof(rectangle_vertex)*m_vertexData.size()));
-            getMeshComponent(m_meshId)->setIndices((void*)&m_indexData[0], sizeof(m_indexData));
-            getMeshComponent(m_meshId)->loadShader("main.vertex", "main.fragment");
-            getTransformComponent(m_meshTransformId)->addMesh(m_meshId);
+            getRectMesh()->setVertices((void*)&m_vertexData[0], (int)(sizeof(rectangle_vertex)*m_vertexData.size()));
+            getRectMesh()->setIndices((void*)&m_indexData[0], sizeof(m_indexData));
+            getRectMesh()->loadShader("main.vertex", "main.fragment");
+            getRectMeshTransform()->addMesh(m_meshId);
         }
 
         component::Mesh *Rectangle::getRectMesh()
         {
-            return getMeshComponent(m_meshId);
+            return getComponent<component::Mesh, component::mesh>(m_meshId);
         }
 
         component::Transform *Rectangle::getRectMeshTransform()
         {
-            return getTransformComponent(m_meshTransformId);
+            return getComponent<component::Transform, component::transform>(m_meshTransformId);
         }
     }
 }

@@ -84,12 +84,12 @@ namespace mayGL
 
         component::Mesh *Cube::getCubeMesh()
         {
-            return getMeshComponent(m_cubeMeshId);
+            return getComponent<component::Mesh, component::mesh>(m_cubeMeshId);
         }
 
         component::Transform *Cube::getCubeMeshTransform()
         {
-            return getTransformComponent(m_cubeMeshTransformId);
+            return getComponent<component::Transform, component::transform>(m_cubeMeshTransformId);
         }
     }
 }

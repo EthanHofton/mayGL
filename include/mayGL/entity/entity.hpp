@@ -60,72 +60,14 @@ namespace mayGL
             void updateComponents();
             inline virtual void update() {}
             
-            // -- commonly used functions
-            inline bool hasMeshComponent() { return hasComponent(component::mesh); }
-            inline bool hasTransformComponent() { return hasComponent(component::transform); }
-            inline bool hasTextureComponent() { return hasComponent(component::texture); }
-            inline bool hasTextureAtlasComponent() { return hasComponent(component::textureAtlas); }
-            inline bool hasColorComponent() { return hasComponent(component::color); }
-            inline bool hasPhysicsBody() { return hasComponent(component::physicsBody); }
-            inline bool hasCollider() { return hasComponent(component::collider); }
-            
-            inline component::Transform *getTransformComponent(std::string t_id) 
-            { return getComponentType<component::Transform*, component::transform>(t_id); }
-            std::vector<component::Transform*> getTransformComponents()
-            { return getComponents<component::Transform*, component::transform>(); }
-
-            component::Mesh *getMeshComponent(std::string t_id)
-            { return getComponentType<component::Mesh*, component::mesh>(t_id); }
-            std::vector<component::Mesh*> getMeshComponents()
-            { return getComponents<component::Mesh*, component::mesh>(); }
-
-            component::Texture *getTextureComponent(std::string t_id)
-            { return getComponentType<component::Texture*, component::texture>(t_id); }
-            std::vector<component::Texture*> getTextureComponents()
-            { return getComponents<component::Texture*, component::texture>(); }
-
-            component::TextureAtlas *getTextureAtlasComponent(std::string t_id)
-            { return getComponentType<component::TextureAtlas*, component::textureAtlas>(t_id); }
-            std::vector<component::TextureAtlas*> getTextureAtlasComponents()
-            { return getComponents<component::TextureAtlas*, component::textureAtlas>(); }
-
-            component::ColorComponent *getColorComponent(std::string t_id)
-            { return getComponentType<component::ColorComponent*, component::color>(t_id); }
-            std::vector<component::ColorComponent*> getColorComponents()
-            { return getComponents<component::ColorComponent*, component::color>(); }
-
-            physics::PhysicsBody *getPhysicsBody(std::string t_id)
-            { return getComponentType<physics::PhysicsBody*, component::physicsBody>(t_id); }
-            std::vector<physics::PhysicsBody*> getPhysicsBodys()
-            { return getComponents<physics::PhysicsBody*, component::physicsBody>(); }
-
-            physics::Collider *getCollider(std::string t_id)
-            { return getComponentType<physics::Collider*, component::collider>(t_id); }
-            std::vector<physics::Collider*> getColliders()
-            { return getComponents<physics::Collider*, component::collider>(); }
-
-            physics::CubeCollider *getCubeCollider(std::string t_id)
-            { return getComponentType<physics::CubeCollider*, component::collider>(t_id); }
-            std::vector<physics::CubeCollider*> getCubeColliders()
-            { return getColliderComponents<physics::CubeCollider*, physics::cube>(); }
-
-            physics::SphereCollider *getSphereCollider(std::string t_id)
-            { return getComponentType<physics::SphereCollider*, component::collider>(t_id); }
-            std::vector<physics::SphereCollider*> getSphereColliders()
-            { return getColliderComponents<physics::SphereCollider*, physics::sphere>(); }
-
-            physics::PlainCollider *getPlainCollider(std::string t_id)
-            { return getComponentType<physics::PlainCollider*, component::collider>(t_id); }
-            std::vector<physics::PlainCollider*> getPlainColliders()
-            { return getColliderComponents<physics::PlainCollider*, physics::plain>(); }
-            // -- commonly used functions
-            
         private:
             
             inline void child(Entity *t_e) { m_children.push_back(t_e); }
 
+        public:
+
             template<typename T, component::component_types T_TYPE>
-            inline const T getComponentType(const std::string& t_id)
+            inline T* getComponent(const std::string& t_id)
             {
                 if (!hasComponent(T_TYPE))
                 {
@@ -133,19 +75,26 @@ namespace mayGL
                     return nullptr;
                 }
 
-                return static_cast<T>(findComponent(t_id));
+                return static_cast<T*>(findComponent(t_id));
+            }
+
+            template<typename T>
+            inline T* getComponent(const std::string& t_id)
+            {
+                // no type error checking
+                return static_cast<T*>(findComponent(t_id));
             }
 
             template<typename T, component::component_types T_TYPE>
-            inline const std::vector<T> getComponents()
+            inline std::vector<T*> getComponents()
             {
-                std::vector<T> returnComponents;
+                std::vector<T*> returnComponents;
                 
                 for (auto component : m_components)
                 {
                     if (component->getType() == T_TYPE)
                     {
-                        returnComponents.push_back(static_cast<T>(component));
+                        returnComponents.push_back(static_cast<T*>(component));
                     }
                 }
                 
@@ -153,7 +102,7 @@ namespace mayGL
             }
 
             template<typename T, physics::colliderTypes T_COLLIDER_TYPE>
-            inline const std::vector<T> getColliderComponents()
+            inline std::vector<T*> getColliderComponents()
             {
                 if (!hasComponent(component::collider))
                 {
@@ -161,7 +110,7 @@ namespace mayGL
                     return {};
                 }
 
-                std::vector<T> returnComponents;
+                std::vector<T*> returnComponents;
                 
                 for (auto component : m_components)
                 {
@@ -178,7 +127,13 @@ namespace mayGL
                 
                 return returnComponents;
             }
-            
+
+            template<typename T>
+            T* as()
+            {
+                return static_cast<T*>(this);
+            }
+
         private:
             
             bool m_active;

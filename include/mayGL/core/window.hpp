@@ -29,7 +29,9 @@ namespace mayGL
             
         private:
             
+            void earlyUpdate();
             void update();
+            void lateUpdate();
             void draw();
             
         private:

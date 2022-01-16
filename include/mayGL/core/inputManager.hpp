@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 #include <SDL2/SDL.h>
+#include <imgui/imgui.h>
 
 #include <glm/glm.hpp>
 #include "logger.hpp"
@@ -40,11 +41,11 @@ namespace mayGL
         public:
             
             inline bool keyDown(SDL_Scancode t_scancode)
-            { return m_keyboardStates[t_scancode]; }
+            { return m_keyboardStates[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard); }
             inline bool keyPressed(SDL_Scancode t_scancode)
-            { return m_keyboardStates[t_scancode] && !m_prevKeyState[t_scancode]; }
+            { return m_keyboardStates[t_scancode] && !m_prevKeyState[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard); }
             inline bool keyReleased(SDL_Scancode t_scancode)
-            { return !m_keyboardStates[t_scancode] && m_prevKeyState[t_scancode]; }
+            { return !m_keyboardStates[t_scancode] && m_prevKeyState[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard); }
             
             bool mouseButtonDown(MOUSE_BUTTONS t_button);
             bool mouseButtonPressed(MOUSE_BUTTONS t_button);
@@ -54,7 +55,7 @@ namespace mayGL
             inline glm::vec2 getDeltaMousePos() { return m_dmPos; }
             
             void giveEvents(SDL_Event t_e);
-            inline bool mouseMotion() { return m_mouseMovement; }
+            inline bool mouseMotion() { return (m_mouseMovement && !(ImGui::GetIO().WantCaptureMouse)); }
             inline void mouseMotion(bool t_m) { m_mouseMovement = t_m; }
             
             inline void update()

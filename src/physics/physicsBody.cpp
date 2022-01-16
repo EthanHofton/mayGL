@@ -50,7 +50,7 @@ namespace mayGL
 
         void PhysicsBody::addTransform(std::string t_transformId)
         {
-            m_transforms.push_back(getParent()->getTransformComponent(t_transformId));
+            m_transforms.push_back(getParent()->getComponent<component::Transform, component::transform>(t_transformId));
         }
 
         void PhysicsBody::addTransforms(std::vector<std::string> t_transformIds)
@@ -64,7 +64,7 @@ namespace mayGL
         void PhysicsBody::addAllTransforms()
         {
             m_transforms.clear();
-            m_transforms = getParent()->getTransformComponents();
+            m_transforms = getParent()->getComponents<component::Transform, component::transform>();
         }
 
         void PhysicsBody::removeTransform(std::string t_transformId)

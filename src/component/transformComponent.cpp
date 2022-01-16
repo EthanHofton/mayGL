@@ -131,7 +131,7 @@ namespace mayGL
 
         void Transform::addMesh(std::string t_meshId)
         {
-            m_meshes.push_back(getParent()->getMeshComponent(t_meshId));
+            m_meshes.push_back(getParent()->getComponent<Mesh, component::mesh>(t_meshId));
         }
 
         void Transform::addMeshes(std::vector<std::string> t_meshIds)
@@ -145,7 +145,7 @@ namespace mayGL
         void Transform::addAllMeshes()
         {
             m_meshes.clear();
-            m_meshes = getParent()->getMeshComponents();
+            m_meshes = getParent()->getComponents<Mesh, component::mesh>();
         }
 
         void Transform::removeMesh(std::string t_meshId)

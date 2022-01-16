@@ -10,6 +10,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdl.h>
+#include <imgui/imgui_impl_opengl3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -56,7 +60,7 @@ namespace mayGL
             
             inline void swapBuffers() { SDL_GL_SwapWindow(m_window); }
             inline int pollEvent() { m_event = SDL_Event(); return SDL_PollEvent(&m_event); }
-            inline SDL_Event getEvent() { return m_event; }
+            inline SDL_Event &getEvent() { return m_event; }
             
             inline void screenClearColor()
             {

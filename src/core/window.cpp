@@ -98,6 +98,7 @@ namespace mayGL
                 {
                     while (m_graphicsInstance->pollEvent())
                     {
+                        ImGui_ImplSDL2_ProcessEvent(&m_graphicsInstance->getEvent());
                         m_inputManager->giveEvents(m_graphicsInstance->getEvent());
                         
                         if (m_activePage != nullptr)
@@ -113,8 +114,7 @@ namespace mayGL
                     }
                     
                     // early update
-                    m_timerInstance->reset();
-                    m_inputManager->update();
+                    earlyUpdate();
                     // early update
                     
                     // update
@@ -126,10 +126,16 @@ namespace mayGL
                     // render
                     
                     // late update
-                    m_inputManager->updatePrevInput();
+                    lateUpdate();
                     // late update
                 }
             }
+        }
+
+        void Window::earlyUpdate()
+        {
+            m_timerInstance->reset();
+            m_inputManager->update();
         }
         
         void Window::update()
@@ -140,9 +146,18 @@ namespace mayGL
                 m_activePage->updateEntities();
             }
         }
+
+        void Window::lateUpdate()
+        {
+            m_inputManager->updatePrevInput();
+        }
         
         void Window::draw()
         {
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplSDL2_NewFrame();
+            ImGui::NewFrame();
+
             m_graphicsInstance->screenClear();
             m_graphicsInstance->screenClearColor();
             
@@ -152,6 +167,9 @@ namespace mayGL
             }
             
             m_renderer->draw();
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             
             m_graphicsInstance->swapBuffers();
         }

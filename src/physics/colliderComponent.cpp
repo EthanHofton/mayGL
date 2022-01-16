@@ -8,8 +8,8 @@ namespace mayGL
     {
         Collider::Collider(entity::Entity *t_parent, std::string t_id, colliderTypes t_colliderType, std::string t_physicsBodyId, std::string t_transformId) : component::Component(t_parent, component::collider, t_id)
         {
-            m_transform = getParent()->getTransformComponent(t_transformId);
-            m_physicsBody = getParent()->getPhysicsBody(t_physicsBodyId);
+            m_transform = getParent()->getComponent<component::Transform, component::transform>(t_transformId);
+            m_physicsBody = getParent()->getComponent<PhysicsBody, component::physicsBody>(t_physicsBodyId);
             m_colliderType = t_colliderType;
             m_showCollider = false;
 

@@ -27,7 +27,7 @@ namespace mayGL
 
         void TextureAtlas::addMesh(std::string t_meshId)
         {
-            m_meshes.push_back(getParent()->getMeshComponent(t_meshId));
+            m_meshes.push_back(getParent()->getComponent<Mesh, component::mesh>(t_meshId));
         }
 
         void TextureAtlas::addMeshes(std::vector<std::string> t_meshIds)
@@ -41,7 +41,7 @@ namespace mayGL
         void TextureAtlas::addAllMeshes()
         {
             m_meshes.clear();
-            m_meshes = getParent()->getMeshComponents();
+            m_meshes = getParent()->getComponents<Mesh, component::mesh>();
         }
 
         void TextureAtlas::removeMesh(std::string t_meshId)
