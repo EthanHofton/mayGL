@@ -24,6 +24,11 @@ namespace mayGL
         
         void Transform::rotate(float t_rad, glm::vec3 t_axis)
         {
+            if (t_rad == 0)
+            {
+                return;
+            }
+
             m_roatation += t_rad;
             if (m_roatation >= math::c_TAU)
             {
@@ -74,6 +79,11 @@ namespace mayGL
         
         void Transform::setScale(glm::vec3 t_scale)
         {
+            if (t_scale == m_scale)
+            {
+                return;
+            }
+
             m_scaleMatrix = glm::scale(glm::mat4(1.0f), t_scale);
             m_needsMatrixUpdate = true;
             m_scale = t_scale;
@@ -100,6 +110,11 @@ namespace mayGL
         
         void Transform::pos(glm::vec3 t_pos)
         {
+            if (m_pos == t_pos)
+            {
+                return;
+            }
+
             m_pos = t_pos;
             m_translationMatrix = glm::translate(glm::mat4(1.0f), m_pos);
             m_needsMatrixUpdate = true;
@@ -132,6 +147,7 @@ namespace mayGL
         void Transform::addMesh(std::string t_meshId)
         {
             m_meshes.push_back(getParent()->getComponent<Mesh, component::mesh>(t_meshId));
+            m_needsMatrixUpdate = true;
             CORE_INFO("Transform with id '{}' added mesh with id '{}'", m_id, t_meshId);
         }
 
@@ -142,6 +158,7 @@ namespace mayGL
                 addMesh(meshId);
             }
 
+            m_needsMatrixUpdate = true;
             CORE_INFO("Transform with id '{}' added {} meshes", m_id, t_meshIds.size());
         }
 
@@ -150,6 +167,7 @@ namespace mayGL
             m_meshes.clear();
             m_meshes = getParent()->getComponents<Mesh, component::mesh>();
 
+            m_needsMatrixUpdate = true;
             CORE_INFO("Transform with id '{}' added all meshes", m_id);
         }
 
@@ -261,7 +279,10 @@ namespace mayGL
             // should use drag input
             static bool dragEdit = true;
             ImGui::Checkbox("Drag Edit Values", &dragEdit);
+            ImGui::Separator();
 
+            // needs matrix update
+            ImGui::LabelText("m_transformUpdate", (m_transformUpdate) ? "1" : "0");
             ImGui::Separator();
 
             // Pos
