@@ -132,6 +132,7 @@ namespace mayGL
         void Transform::addMesh(std::string t_meshId)
         {
             m_meshes.push_back(getParent()->getComponent<Mesh, component::mesh>(t_meshId));
+            CORE_INFO("Transform with id '{}' added mesh with id '{}'", m_id, t_meshId);
         }
 
         void Transform::addMeshes(std::vector<std::string> t_meshIds)
@@ -140,12 +141,16 @@ namespace mayGL
             {
                 addMesh(meshId);
             }
+
+            CORE_INFO("Transform with id '{}' added {} meshes", m_id, t_meshIds.size());
         }
 
         void Transform::addAllMeshes()
         {
             m_meshes.clear();
             m_meshes = getParent()->getComponents<Mesh, component::mesh>();
+
+            CORE_INFO("Transform with id '{}' added all meshes", m_id);
         }
 
         void Transform::removeMesh(std::string t_meshId)
@@ -163,12 +168,14 @@ namespace mayGL
             
             if (found)
             {
+                CORE_INFO("Transform with id '{}' removed mesh with id '{}'", m_id, t_meshId);
                 m_meshes.erase(m_meshes.begin() + index);
             }
         }
 
         void Transform::removeAllMeshes()
         {
+            CORE_INFO("Transform with id '{}' removed all bound meshes", m_id);
             m_meshes.clear();
         }
         
@@ -248,7 +255,107 @@ namespace mayGL
 
         void Transform::imguiComponentInspector()
         {
-            ImGui::Text("Derrived Transform component");
+            // Component Info
+            Component::imguiComponentInspector();
+
+            // should use drag input
+            static bool dragEdit = true;
+            ImGui::Checkbox("Drag Edit Values", &dragEdit);
+
+            ImGui::Separator();
+
+            // Pos
+            glm::vec3 newPos = m_pos;
+            ImGui::Text("m_pos");
+            if (dragEdit)
+            {
+                ImGui::DragFloat3("xyz pos", &newPos[0], 0.1f);
+            } else {
+                ImGui::InputFloat3("xyz pos", &newPos[0]);
+            }
+            if (newPos != m_pos)
+            {
+                pos(newPos);
+            }
+            ImGui::Separator();
+
+            // Scale
+            glm::vec3 newScale = m_scale;
+            ImGui::Text("m_scale");
+            if (dragEdit)
+            {
+                ImGui::DragFloat3("xyz scale", &newScale[0], 0.1f);
+            } else {
+                ImGui::InputFloat3("xyz scale", &newScale[0]);
+            }
+            if (newScale != m_scale)
+            {
+                setScale(newScale);
+            }
+            ImGui::Separator();
+
+            // Rotation
+            float deg = m_roatation;
+            static glm::vec3 m_axis = glm::vec3(0.0f);
+            ImGui::Text("m_rotation");
+            bool update = false;
+
+            if (dragEdit)
+            {
+                update = ImGui::SliderAngle("deg", &deg);
+                bool axisUpdate = ImGui::SliderFloat3("axis of rotation", &m_axis[0], -1.0f, 1.0f);
+                update = update || axisUpdate;
+            } else {
+                update = ImGui::InputFloat("deg", &deg);
+                bool axisUpdate = ImGui::InputFloat3("axis of rotation", &m_axis[0]);
+                update = update || axisUpdate;
+                deg = math::degToRad(deg);
+            }
+            if (update && m_axis != math::c_vec3Zero)
+            {
+                setRotation(deg, m_axis);
+            }            
+            ImGui::Separator();
+
+            // TODO: bound meshes
+            auto allMeshes = getParent()->getComponents<Mesh, mesh>();
+            std::vector<char> meshSelections;
+            meshSelections.resize(allMeshes.size());
+            std::fill(meshSelections.begin(), meshSelections.end(), false);
+            for (int i = 0; i < allMeshes.size(); i++)
+            {
+                for (auto mesh : m_meshes)
+                {
+                    if (mesh->getId() == allMeshes[i]->getId())
+                    {
+                        meshSelections[i] = true;
+                    }
+                }
+            }
+
+            if (ImGui::TreeNode("Bind Meshes"))
+            {
+                for (int i = 0; i < allMeshes.size(); i++)
+                {
+                    if (ImGui::Selectable(allMeshes[i]->getId().c_str(), (bool)meshSelections[i]))
+                    {
+                        if ((bool)meshSelections[i] == true)
+                        {
+                            // remove mesh
+                            removeMesh(allMeshes[i]->getId());
+                        } else {
+                            // add mesh
+                            addMesh(allMeshes[i]->getId());
+                        }
+                    }
+                }
+
+                ImGui::TreePop();
+            }
+
+            ImGui::Separator();
+
+            ImGui::Spacing();
         }
     }
 }

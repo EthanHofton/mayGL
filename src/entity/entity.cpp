@@ -51,6 +51,16 @@ namespace mayGL
         
         void Entity::parent(Entity *t_e)
         {
+            if (t_e == m_parent)
+            {
+                return;
+            }
+
+            if (m_parent != nullptr)
+            {
+                m_parent->removeChild(getEntityId());
+            }
+
             m_parent = t_e;
             if (m_parent != nullptr)
             {
@@ -218,13 +228,33 @@ namespace mayGL
             }
         }
 
-        void Entity::imguiInspector()
+        void Entity::removeChild(std::string t_id)
+        {
+            int removeIndex = -1;
+            for (int i = 0; i < m_children.size(); i++)
+            {
+                auto child = m_children[i];
+                if (child->getEntityId() == t_id)
+                {
+                    removeIndex = i;
+                }
+            }
+
+            if (removeIndex != -1)
+            {
+                CORE_INFO("child with id '{}' removed from entity with id '{}'", t_id, getEntityId());
+
+                m_children.erase(m_children.begin() + removeIndex);
+            }
+        }
+
+        void Entity::imguiInspector(std::vector<Entity*> t_entites)
         {
             if (m_showImguiInspector)
             {
+                // begin window title
                 std::string windowName = "inspector: "+ m_id +"###" + std::to_string(m_entityUID);
                 ImGui::Begin(windowName.c_str(), &m_showImguiInspector);
-
                 ImGui::PushItemWidth(ImGui::GetFontSize() * -10);
 
                 // display entity ID
@@ -236,26 +266,75 @@ namespace mayGL
                         entityId(idCopy);
                     }
                 }
+                ImGui::Separator();
 
-                ImGui::LabelText((m_active) ? "True" : "False", "m_active:");
-                if (hasParent())
+                // entity UID
+                ImGui::LabelText("m_entityUID", "%s", std::to_string(m_entityUID).c_str());
+                ImGui::Separator();
+
+                // entity parent combo
+                std::vector<std::string> possibleParents;
+                int itemCurrent = 0;
+                possibleParents.push_back("nullptr");
+                for (int i = 0; i < t_entites.size(); i++)
                 {
-                    ImGui::LabelText("", "m_parent:");
-                    ImGui::SameLine();
-                    if (ImGui::Button(m_parent->getEntityId().c_str()))
+                    auto e = t_entites[i];
+                    if (e->getEntityId() != getEntityId())
                     {
-                        m_parent->shouldShowImguiInspector(true);
+                        possibleParents.push_back(e->getEntityId());
                     }
-                } else {
-                    ImGui::LabelText("nullptr", "m_parent:");
                 }
 
-                ImGui::LabelText(std::to_string(m_entityUID).c_str(), "m_entityUID:");
+                if (hasParent()) {
+                    for (int i = 0; i < possibleParents.size(); i++)
+                    {
+                        if (getParent()->getEntityId() == possibleParents[i])
+                        {
+                            itemCurrent = i;
+                        }
+                    }
+                }
+
+                
+
+                std::string comboName = "m_parent##combo:" + std::to_string(m_entityUID);
+                if (ImGui::BeginCombo(comboName.c_str(), possibleParents[itemCurrent].c_str()))
+                {
+                    for (int i = 0; i < possibleParents.size(); i++)
+                    {
+                        bool isSelected = (itemCurrent == i);
+                        std::string selectableName = possibleParents[i] + "##selectable:" + std::to_string(m_entityUID);
+                        if (ImGui::Selectable(selectableName.c_str(), &isSelected))
+                        {
+                            itemCurrent = i;
+                        }
+
+                        if (isSelected)
+                        {
+                            parent(getEntity(possibleParents[itemCurrent]));
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+
+                    ImGui::EndCombo();
+                }
+                
+                ImGui::Separator();
+
+                // m_active checkbox
+                bool activeCopy = m_active;
+                if (ImGui::Checkbox("m_active", &activeCopy))
+                {
+                    active(activeCopy);
+                }
+                ImGui::Separator();
 
                 customImguiProperties();
                 
+                // display components
                 ImGui::AlignTextToFramePadding();
-                bool componetsCollapsed = ImGui::TreeNodeEx("Components", ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+                std::string componentCollapsedName = ("Components##Comp:" + std::to_string(m_entityUID));
+                bool componetsCollapsed = ImGui::CollapsingHeader(componentCollapsedName.c_str());
                 ImGui::SameLine(ImGui::GetWindowWidth() - 65);
                 ImGui::Text("%lu", m_components.size());
                 if (componetsCollapsed)
@@ -268,7 +347,9 @@ namespace mayGL
                         }
                     }
                 }
+                ImGui::Separator();
 
+                // display children
                 ImGui::AlignTextToFramePadding();
                 bool childrenCollapsed = ImGui::TreeNode("Children");
                 ImGui::SameLine(ImGui::GetWindowWidth() - 65);
@@ -286,6 +367,7 @@ namespace mayGL
                     }
                     ImGui::TreePop();
                 }
+                ImGui::Separator();
 
                 ImGui::End();
             }

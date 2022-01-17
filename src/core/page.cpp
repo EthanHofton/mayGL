@@ -54,7 +54,7 @@ namespace mayGL
 
             for (auto entity : getEntites())
             {
-                entity->imguiInspector();
+                entity->imguiInspector(getEntites());
             }
         }
 
@@ -81,7 +81,7 @@ namespace mayGL
                 for (int i = 0; i < t_e->getChildren().size(); i++)
                 {
                     ImGui::PushID(i);
-                    addEntityPlaceholder(t_e->getChildren()[0], i);
+                    addEntityPlaceholder(t_e->getChildren()[i], i);
                     ImGui::PopID();
                 }
                 

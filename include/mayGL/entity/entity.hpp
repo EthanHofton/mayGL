@@ -66,12 +66,13 @@ namespace mayGL
             void updateComponents();
             inline virtual void update() {}
 
-            void imguiInspector();
+            void imguiInspector(std::vector<Entity*> t_entites);
             virtual void customImguiProperties() {}
             
         private:
             
             inline void child(Entity *t_e) { m_children.push_back(t_e); }
+            void removeChild(std::string t_id);
 
         public:
 

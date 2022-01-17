@@ -207,7 +207,21 @@ namespace mayGL
 
         void PhysicsWorld::customImguiProperties()
         {
-            ImGui::Text("Hello world from physics world class");
+            static bool dragEdit = true;
+            ImGui::Checkbox("Drag Edit Values", &dragEdit);
+            ImGui::Separator();
+
+            // gravity controller
+            if (dragEdit)
+            {
+                ImGui::DragFloat3("m_gravity", &m_gravity[0], 0.1f);
+            } else {
+                ImGui::InputFloat3("m_gravity", &m_gravity[0]);
+            }
+            ImGui::Separator();
+
+            ImGui::Checkbox("m_gravityAffected", &m_gravityAffected);
+            ImGui::Separator();
         }
     }
 }
