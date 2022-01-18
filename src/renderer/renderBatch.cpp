@@ -92,16 +92,19 @@ namespace mayGL
                 void *vertices = mesh->getWorldVertices();
                 
                 // update indices
-                std::vector<unsigned int> indicesVector((unsigned int*)indices, (unsigned int*)indices + (mesh->getIndicesSize() / sizeof(unsigned int)));
-                int indexOffset = *std::max_element(indicesVector.begin(), indicesVector.end()) + 1;
-                for (auto &element : indicesVector)
+                unsigned int* indicesCopy = (unsigned int*)malloc(mesh->getIndicesSize());
+                memcpy(indicesCopy, indices, mesh->getIndicesSize());
+                int indexOffset = *std::max_element(indicesCopy, indicesCopy +  (mesh->getIndicesSize() / sizeof(unsigned int))) + 1;
+                for (int i = 0; i < (mesh->getIndicesSize() / sizeof(unsigned int)); i++)
                 {
-                    element = element + currentCall->m_indexValueOffset;
+                    indicesCopy[i] += currentCall->m_indexValueOffset;
                 }
-                
+
                 memcpy((char *)currentCall->m_vertexArray + currentCall->m_vertexDataOffset, vertices, mesh->getVerticesSize());
-                memcpy((char *)currentCall->m_indexArray + currentCall->m_indexDataOffset, &indicesVector[0], mesh->getIndicesSize());
+                memcpy((char *)currentCall->m_indexArray + currentCall->m_indexDataOffset, indicesCopy, mesh->getIndicesSize());
                 
+                free(indicesCopy);
+
                 currentCall->m_objects++;
                 currentCall->m_indexValueOffset += indexOffset;
                 currentCall->m_indexDataOffset += mesh->getIndicesSize();

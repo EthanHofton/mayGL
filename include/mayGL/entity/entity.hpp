@@ -67,7 +67,7 @@ namespace mayGL
             inline virtual void update() {}
 
             void imguiInspector(std::vector<Entity*> t_entites);
-            virtual void customImguiProperties() {}
+            virtual void customImguiProperties(std::vector<Entity*> t_entites) {}
             
         private:
             

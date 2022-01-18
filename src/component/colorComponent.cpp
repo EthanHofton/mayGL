@@ -74,6 +74,7 @@ namespace mayGL
         void ColorComponent::addMesh(std::string t_meshId)
         {
             m_meshes.push_back(getParent()->getComponent<Mesh, component::mesh>(t_meshId));
+            CORE_INFO("ColorComponent with id '{}' added mesh with id '{}'", m_id, t_meshId);
 
             updateColor();
         }
@@ -85,6 +86,8 @@ namespace mayGL
                 addMesh(meshId);
             }
 
+            CORE_INFO("ColorComponent with id '{}' added {} meshes", m_id, t_meshIds.size());
+
             updateColor();
         }
 
@@ -92,6 +95,7 @@ namespace mayGL
         {
             m_meshes.clear();
             m_meshes = getParent()->getComponents<Mesh, component::mesh>();
+            CORE_INFO("ColorComponent with id '{}' added all meshes", m_id);
 
             updateColor();
         }
@@ -111,6 +115,7 @@ namespace mayGL
             
             if (found)
             {
+                CORE_INFO("ColorComponent with id '{}' removed mesh with id '{}'", m_id, t_meshId);
                 m_meshes.erase(m_meshes.begin() + index);
             }
 
@@ -120,12 +125,11 @@ namespace mayGL
         void ColorComponent::removeAllMeshes()
         {
             m_meshes.clear();
+            CORE_INFO("ColorComponent with id '{}' removed all bound meshes", m_id);
         }
 
         void ColorComponent::updateColor()
         {
-            CORE_DEBUG("color updated");
-
             for (auto mesh : m_meshes)
             {
                 auto vertexLayout = mesh->getLayout();
@@ -171,6 +175,83 @@ namespace mayGL
                     }
                 }
             }
+        }
+
+        void ColorComponent::imguiComponentInspector()
+        {
+            // Component Info
+            Component::imguiComponentInspector();
+
+            // start vertices
+            ImGui::LabelText("m_vertexStart", "%i", m_vertexStart);
+            ImGui::Separator();
+
+            // end vertices
+            ImGui::LabelText("m_vertexEnd", "%i", m_vertexEnd);
+            ImGui::Separator();
+
+            // choose color
+            ImGui::Text("m_color");
+            glm::vec4 newColor = m_color;
+            static bool alpha_preview = true;
+            static bool alpha_half_preview = false;
+            static bool drag_and_drop = true;
+            static bool options_menu = true;
+            static bool hdr = false;
+            static bool hsv = false;
+            ImGui::Checkbox("With Alpha Preview", &alpha_preview);
+            ImGui::Checkbox("With Half Alpha Preview", &alpha_half_preview);
+            ImGui::Checkbox("With Drag and Drop", &drag_and_drop);
+            ImGui::Checkbox("With Options Menu", &options_menu);
+            ImGui::Checkbox("With HDR", &hdr);
+            ImGui::Checkbox("With HSV", &hsv);
+            ImGuiColorEditFlags misc_flags = (hsv ? ImGuiColorEditFlags_DisplayHSV : 0) | (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+            ImGui::ColorEdit4("rgba color", &newColor[0], misc_flags);
+            if (newColor != m_color)
+            {
+                setColor(newColor);
+            }
+            ImGui::Separator();
+
+            // add bound meshes
+            auto allMeshes = getParent()->getComponents<Mesh, mesh>();
+            std::vector<char> meshSelections;
+            meshSelections.resize(allMeshes.size());
+            std::fill(meshSelections.begin(), meshSelections.end(), false);
+            for (int i = 0; i < allMeshes.size(); i++)
+            {
+                for (auto mesh : m_meshes)
+                {
+                    if (mesh->getId() == allMeshes[i]->getId())
+                    {
+                        meshSelections[i] = true;
+                    }
+                }
+            }
+
+            if (ImGui::TreeNode("Bind Meshes"))
+            {
+                for (int i = 0; i < allMeshes.size(); i++)
+                {
+                    if (ImGui::Selectable(allMeshes[i]->getId().c_str(), (bool)meshSelections[i]))
+                    {
+                        if ((bool)meshSelections[i] == true)
+                        {
+                            // remove mesh
+                            removeMesh(allMeshes[i]->getId());
+                        } else {
+                            // add mesh
+                            addMesh(allMeshes[i]->getId());
+                        }
+                    }
+                }
+
+                ImGui::TreePop();
+            }
+
+            ImGui::Separator();
+
+            ImGui::Spacing();
         }
     }
 }

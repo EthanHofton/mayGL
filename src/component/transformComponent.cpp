@@ -338,7 +338,7 @@ namespace mayGL
             }            
             ImGui::Separator();
 
-            // TODO: bound meshes
+            // add bound meshes
             auto allMeshes = getParent()->getComponents<Mesh, mesh>();
             std::vector<char> meshSelections;
             meshSelections.resize(allMeshes.size());

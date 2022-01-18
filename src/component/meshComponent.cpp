@@ -28,6 +28,14 @@ namespace mayGL
             {
                 free(m_modelVertices);
             }
+
+            if (m_worldVertices != nullptr)
+            {
+                free(m_worldVertices);
+            }
+
+            m_modelVertices = nullptr;
+            m_worldVertices = nullptr;
         }
         
         void Mesh::loadShader(std::string t_vertexFile, std::string t_fragFile)
@@ -52,15 +60,29 @@ namespace mayGL
         
         void Mesh::setVertices(void *t_vertices, unsigned int t_vSize)
         {
-            m_worldVertices = t_vertices;
+            // set the size
             m_verticesSize = t_vSize;
+
+            // delete the old opy of the vertices (world and modlel)
             if (m_modelVertices != nullptr)
             {
                 free(m_modelVertices);
             }
+
+            if (m_worldVertices != nullptr)
+            {
+                free(m_worldVertices);
+            }
+
+            // create new world and model vertice list
+            m_worldVertices = malloc(m_verticesSize);
             m_modelVertices = malloc(m_verticesSize);
-            memcpy(m_modelVertices, m_worldVertices, m_verticesSize);
+
+            // copy in the vertice data
+            memcpy(m_modelVertices, t_vertices, m_verticesSize);
+            memcpy(m_worldVertices, t_vertices, m_verticesSize);
             
+            // update the texture coords
             if (getParent()->hasComponent(component::textureAtlas))
             {
                 for (auto component : getParent()->getComponents<TextureAtlas, component::textureAtlas>())
@@ -69,6 +91,7 @@ namespace mayGL
                 }
             }
 
+            // update the color
             if (getParent()->hasComponent(component::color))
             {
                 for (auto component : getParent()->getComponents<ColorComponent, component::color>())
@@ -80,8 +103,20 @@ namespace mayGL
         
         void Mesh::setIndices(void *t_indices, unsigned int t_iSize)
         {
-            m_indices = t_indices;
+            // set the indices size IN BYTES
             m_indeicesSize = t_iSize;
+
+            // delete the old indice array allready if set
+            if (m_indices != nullptr)
+            {
+                free(m_indices);
+            }
+
+            // create a new indice list
+            m_indices = malloc(m_indeicesSize);
+
+            // copy over the indcie data
+            memcpy(m_indices, t_indices, m_indeicesSize);
         }
         
         renderer::Shader *Mesh::getShader()

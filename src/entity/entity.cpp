@@ -329,7 +329,7 @@ namespace mayGL
                 }
                 ImGui::Separator();
 
-                customImguiProperties();
+                customImguiProperties(t_entites);
                 
                 // display components
                 ImGui::AlignTextToFramePadding();

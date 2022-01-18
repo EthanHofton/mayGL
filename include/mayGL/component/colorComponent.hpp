@@ -45,6 +45,8 @@ namespace mayGL
             void updateColor();
 
             void update() override {}
+
+            void imguiComponentInspector() override;
             
         private:
             
