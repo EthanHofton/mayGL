@@ -178,7 +178,7 @@ namespace mayGL
             {
                 removeTexture();
             }
-            
+
             m_texture = getParent()->getComponent<Texture, component::texture>(t_textureId);
             m_texture->addMesh(m_id);
             CORE_INFO("mesh with id '{}' set texture with id '{}'", m_id, t_textureId);
@@ -321,7 +321,7 @@ namespace mayGL
 
                 for (int i = 0; i < allTextures.size(); i++)
                 {
-                    if (ImGui::Selectable((allTextures[i]->getId() + uidPrefix).c_str(), selected == i))
+                    if (ImGui::Selectable((allTextures[i]->getId() + "##" + uidPrefix).c_str(), selected == i))
                     {
                         if (selected == i)
                         {

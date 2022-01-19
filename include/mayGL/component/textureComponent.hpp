@@ -45,8 +45,15 @@ namespace mayGL
             
             void updateTextureUnit();
             void update() override {}
+
+            void imguiComponentInspector() override;
             
         private:
+
+            // imgui
+            glm::vec2 calculateResolution(int t_area, glm::vec2 t_size);
+            int m_previewImageArea;
+            // imgui
             
             std::string m_filename;
             unsigned int m_textureId;

@@ -13,6 +13,7 @@ namespace mayGL
             std::string filepath = m_filename;
             m_updateTextureUnit = false;
             m_textureUnit = 0;
+            m_previewImageArea = 4096;
             
             int width, height;
             
@@ -161,6 +162,100 @@ namespace mayGL
                 
                 m_updateTextureUnit = false;
             }
+        }
+
+        void Texture::imguiComponentInspector()
+        {
+            // Component Info
+            Component::imguiComponentInspector();
+
+            // unique id so multiple tex components dont get confused
+            std::string uidPrefix = "##" + m_id + getParent()->getEntityId();
+
+            // image properties header
+            if (ImGui::TreeNodeEx(("Image properties" + uidPrefix).c_str(), ImGuiTreeNodeFlags_NoTreePushOnOpen))
+            {
+                // filename label
+                ImGui::LabelText("m_filename", "%s", m_filename.c_str());
+
+                // size label
+                ImGui::LabelText("m_size", "%ix%ipx", (int)m_size.x, (int)m_size.y);
+
+                // bit depth label
+                ImGui::LabelText("m_bitDepth", "%i", m_bitDepth);
+
+                // image preview
+                ImGui::Text("Image preview");
+                glm::vec2 size = calculateResolution(m_previewImageArea, m_size);
+                ImGui::Image((void*)(intptr_t)m_textureId, ImVec2(size.x, size.y));
+                ImGui::DragInt("preview image area", &m_previewImageArea, 8);
+            }
+
+            ImGui::Separator();
+
+            // image properties header
+            if (ImGui::TreeNodeEx(("GLTexture properties" + uidPrefix).c_str(), ImGuiTreeNodeFlags_NoTreePushOnOpen))
+            {
+                // filename label
+                ImGui::LabelText("m_textureId", "%i", m_textureId);
+
+                // size label
+                ImGui::LabelText("m_textureUnit", "%i", m_textureUnit);
+
+                // bit depth label
+                ImGui::LabelText("m_updateTextureUnit", "%s", (m_updateTextureUnit) ? "1" : "0");
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::TreeNode(("Bind Meshes" + uidPrefix).c_str()))
+            {
+                // add bound meshes
+                auto allMeshes = getParent()->getComponents<Mesh, mesh>();
+                std::vector<char> meshSelections;
+                meshSelections.resize(allMeshes.size());
+                std::fill(meshSelections.begin(), meshSelections.end(), false);
+                for (int i = 0; i < allMeshes.size(); i++)
+                {
+                    for (auto mesh : m_meshes)
+                    {
+                        if (mesh->getId() == allMeshes[i]->getId())
+                        {
+                            meshSelections[i] = true;
+                        }
+                    }
+                }
+                
+                for (int i = 0; i < allMeshes.size(); i++)
+                {
+                    if (ImGui::Selectable((allMeshes[i]->getId() + uidPrefix).c_str(), (bool)meshSelections[i]))
+                    {
+                        if ((bool)meshSelections[i] == true)
+                        {
+                            // remove mesh
+                            removeMesh(allMeshes[i]->getId());
+                        } else {
+                            // add mesh
+                            addMesh(allMeshes[i]->getId());
+                        }
+                    }
+                }
+
+                ImGui::TreePop();
+            }
+
+            ImGui::Separator();
+        }
+
+        glm::vec2 Texture::calculateResolution(int t_area, glm::vec2 t_size)
+        {
+            float newWidth = sqrt((t_size.x / t_size.y) * t_area);
+            float newHight = t_area / newWidth;
+
+            int w = roundf(newWidth);
+            int h = roundf(newHight);
+
+            return {w,h};
         }
     }
 }
