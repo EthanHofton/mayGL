@@ -18,6 +18,21 @@ namespace mayGL
             m_texture = nullptr;
             
             m_shaderManager = renderer::ShaderManager::instance();
+
+            m_vertexSource = "";
+            m_geometrySource = "";
+            m_fragmentSource = "";
+
+            m_vertexSourceFilepath = "";
+            m_geometrySourceFilepath = "";
+            m_fragmentSourceFilepath = "";
+
+            m_vertexSourceOpen = false;
+            m_vertexSourceUpdated = false;
+            m_geometrySourceOpen = false;
+            m_geometrySourceUpdated = false;
+            m_fragmentSourceOpen = false;
+            m_fragmentSourceUpdated = false;
         }
         
         Mesh::~Mesh()
@@ -38,25 +53,52 @@ namespace mayGL
             m_modelVertices = nullptr;
             m_worldVertices = nullptr;
         }
+
+        void Mesh::setShader(std::string t_shaderId) 
+        { 
+            m_shaderId = t_shaderId;
+            if (m_shaderId != "")
+            {
+                m_vertexSource = getShader()->getVertexShader();
+                m_geometrySource = getShader()->getGeometryShader();
+                m_fragmentSource = getShader()->getFragmentShader();
+            }
+        }
+
+        void Mesh::imguiUpdateSources()
+        {
+            m_vertexSource = getShader()->getVertexShader();
+            m_geometrySource = getShader()->getGeometryShader();
+            m_fragmentSource = getShader()->getFragmentShader();
+
+            m_vertexSourceUpdated = true;
+            m_geometrySourceUpdated = true;
+            m_fragmentSourceUpdated = true;
+        }
         
         void Mesh::loadShader(std::string t_vertexFile, std::string t_fragFile)
         {
             m_shaderId = m_shaderManager->loadFromFile(t_vertexFile, t_fragFile);
+
+            imguiUpdateSources();
         }
         
         void Mesh::loadShader(std::string t_vertexFile, std::string t_geomFile, std::string t_fragFile)
         {
             m_shaderId = m_shaderManager->loadFromFile(t_vertexFile, t_geomFile, t_vertexFile);
+            imguiUpdateSources();
         }
         
         void Mesh::loadShaderString(std::string t_vertex, std::string t_frag)
         {
             m_shaderId = m_shaderManager->loadFromText(t_vertex, t_frag);
+            imguiUpdateSources();
         }
         
         void Mesh::loadShaderString(std::string t_vertex, std::string t_geom, std::string t_frag)
         {
             m_shaderId = m_shaderManager->loadFromText(t_vertex, t_geom, t_frag);
+            imguiUpdateSources();
         }
         
         void Mesh::setVertices(void *t_vertices, unsigned int t_vSize)
@@ -127,12 +169,37 @@ namespace mayGL
                 return nullptr;
             }
             
-            return renderer::ShaderManager::instance()->getShader(m_shaderId);
+            return m_shaderManager->getShader(m_shaderId);
         }
 
         void Mesh::setTexture(std::string t_textureId)
         {
+            if (m_texture != nullptr)
+            {
+                removeTexture();
+            }
+            
             m_texture = getParent()->getComponent<Texture, component::texture>(t_textureId);
+            m_texture->addMesh(m_id);
+            CORE_INFO("mesh with id '{}' set texture with id '{}'", m_id, t_textureId);
+        }
+
+        void Mesh::removeTexture() 
+        {
+            m_texture->removeMesh(m_id);
+            m_texture = nullptr;
+            CORE_INFO("mesh with id '{}' removed texture", m_id);
+        }
+
+        void Mesh::writeShader(std::string t_filepath, std::string t_source)
+        {
+            std::ofstream writeFile("shaders/" + t_filepath, std::ios::trunc);
+
+            writeFile << t_source << std::endl;
+
+            writeFile.close();
+
+            return;
         }
 
         void Mesh::imguiComponentInspector()
@@ -184,220 +251,160 @@ namespace mayGL
             // shaders
             if (ImGui::TreeNodeEx(("Shader##" + uidPrefix).c_str(), ImGuiTreeNodeFlags_NoTreePushOnOpen))
             {
-                // use shader files or shader text
-                ImGui::Text("Shader to use:");
-                static int shaderFileOrString = -1;
-                if (shaderFileOrString == -1)
+                // section for vertex shader
+                imguiShaderProperties("Vertex", m_vertexSourceFilepath, m_vertexSource, m_vertexSourceOpen);
+
+                // section for geometry shader
+                imguiShaderProperties("Grometry", m_geometrySourceFilepath, m_geometrySource, m_geometrySourceOpen);
+
+                // section for fragment shader
+                imguiShaderProperties("Fragment", m_fragmentSourceFilepath, m_fragmentSource, m_fragmentSourceOpen);
+
+                ImGui::Text("Update changes");
+                if (ImGui::Button(("Update##" + uidPrefix).c_str()))
                 {
-                    if (!hasShader())
+                    bool updated = m_vertexSourceUpdated;
+                    updated |= m_geometrySourceUpdated;
+                    updated |= m_fragmentSourceUpdated;
+
+                    if (updated)
                     {
-                        // use no shader
-                        shaderFileOrString = 2;
-                    } else {
-                        auto shader = m_shaderManager->getShader(m_shaderId);
-                        if (shader->hasVertexShaderFile() || shader->hasGeometryShaderFile() || shader->hasFragmentShaderFile())
-                        {
-                            // use shader file
-                            shaderFileOrString = 1;
+                        if (m_vertexSource == "" && m_geometrySource == "" && m_fragmentSource == "") {
+                            m_shaderId = "";
+                        } else if (m_geometrySource != "") {
+                            loadShaderString(m_vertexSource, m_geometrySource, m_fragmentSource);
                         } else {
-                            // use shader string
-                            shaderFileOrString = 0;
+                            loadShaderString(m_vertexSource, m_fragmentSource);
                         }
                     }
-                }
-
-                ImGui::RadioButton(("Shader String##" + uidPrefix).c_str(), &shaderFileOrString, 0);
-                ImGui::RadioButton(("Shader File##" + uidPrefix).c_str(), &shaderFileOrString, 1);
-                ImGui::RadioButton(("No Shader##" + uidPrefix).c_str(), &shaderFileOrString, 2); 
-                ImGui::Separator();
-
-                if (shaderFileOrString == 0)
-                {
-                    static bool vertexEditing = false;
-                    static bool geometryEditing = false;
-                    static bool fragmentEditing = false;
-                    static bool vertexEdited = false;
-                    static bool geometryEdited = false;
-                    static bool fragmentEdited = false;
-                    static std::string vertexShader;
-                    static std::string geometryShader;
-                    static std::string fragmentShader;
-
-                    ImGui::Text("Edit the text of the shaders");
-                    ImGui::Separator();
-
-                    ImGui::Text("Vertex Shader:");
-                    if (ImGui::Button("Edit Vertex Shader"))
-                    {
-                        vertexEditing = true;
-                        if (hasShader())
-                        {
-                            vertexShader = m_shaderManager->getShader(m_shaderId)->getVertexShader();
-                        } else {
-                            vertexShader = "";
-                        }
-                    }
-
-                    ImGui::Text("Geometry Shader:");
-                    if (ImGui::Button("Edit Geometry Shader"))
-                    {
-                        geometryEditing = true;
-                        if (hasShader())
-                        {
-                            geometryShader = m_shaderManager->getShader(m_shaderId)->getGeometryShader();
-                        } else {
-                            geometryShader = "";
-                        }
-                    }
-
-                    ImGui::Text("Fragment Shader:");
-                    if (ImGui::Button("Edit Fragment Shader"))
-                    {
-                        fragmentEditing = true;
-                        if (hasShader())
-                        {
-                            fragmentShader = m_shaderManager->getShader(m_shaderId)->getFragmentShader();
-                        } else {
-                            fragmentShader = "";
-                        }
-                    }
-                    ImGui::Separator();
-
-                    if (vertexEditing)
-                    {
-                        imguiShaderEditor(vertexShader, vertexEditing, vertexEdited, 0);
-                    }
-
-                    if (geometryEditing)
-                    {
-                        imguiShaderEditor(geometryShader, geometryEditing, geometryEdited, 1);
-                    }
-
-                    if (fragmentEditing)
-                    {
-                        imguiShaderEditor(fragmentShader, fragmentEditing, fragmentEdited, 2);
-                    }
-                    
-                    ImGui::Text("Update %s shaders", m_id.c_str());
-                    std::string updateShadersName = "Update##" + m_id + getParent()->getEntityId();
-                    if (ImGui::Button(updateShadersName.c_str()))
-                    {
-                        if (vertexEdited || geometryEdited || fragmentEdited)
-                        {
-                            if (!vertexEdited)
-                            {
-                                if (hasShader())
-                                {
-                                    vertexShader = m_shaderManager->getShader(m_shaderId)->getVertexShader();
-                                } else {
-                                    vertexShader = "";
-                                }
-                            }
-
-                            if (!geometryEdited)
-                            {
-                                if (hasShader())
-                                {
-                                    geometryShader = m_shaderManager->getShader(m_shaderId)->getGeometryShader();
-                                } else {
-                                    geometryShader = "";
-                                }
-                            }
-
-                            if (!fragmentEdited)
-                            {
-                                if (hasShader())
-                                {
-                                    fragmentShader = m_shaderManager->getShader(m_shaderId)->getFragmentShader();
-                                } else {
-                                    fragmentShader = "";
-                                }
-                            }
-
-                            if (geometryShader == "")
-                            {
-                                loadShaderString(vertexShader, fragmentShader);
-                            } else {
-                                loadShaderString(vertexShader, geometryShader, fragmentShader);
-                            }
-                        }
-                    }
-                }
-
-                if (shaderFileOrString == 1)
-                {
-                    ImGui::Text("Edit the filepath of the shaders");
-                    ImGui::Separator();
-
-                    static std::string vertexShaderFile = (hasShader()) ? m_shaderManager->getShader(m_shaderId)->getVertexShaderFile() : "";
-                    static std::string geometryShaderFile = (hasShader()) ? m_shaderManager->getShader(m_shaderId)->getGeometryShaderFile() : "";
-                    static std::string fragmentShaderFile = (hasShader()) ? m_shaderManager->getShader(m_shaderId)->getFragmentShaderFile() : "";
-                    ImGui::Text("Vertex shader path");
-                    ImGui::InputTextWithHint("vertex shader", "Vertex Shader", &vertexShaderFile);
-
-                    ImGui::Text("Geometry shader path");
-                    ImGui::InputTextWithHint("geometry shader", "Geometry Shader", &geometryShaderFile);
-
-                    ImGui::Text("Fragment shader path");
-                    ImGui::InputTextWithHint("fragment shader", "Fragment Shader", &fragmentShaderFile);
-
-                    bool update = true;
-                    if (hasShader())
-                    {
-                        auto shader = m_shaderManager->getShader(m_shaderId);
-                        update = shader->getVertexShaderFile() != vertexShaderFile;
-                        update = update || shader->getGeometryShaderFile() != geometryShaderFile;
-                        update = update || shader->getFragmentShaderFile() != fragmentShaderFile;
-                    }
-
-                    ImGui::Separator();
-                    ImGui::Text("Update shader filepaths");
-                    if (ImGui::Button("Update") && update)
-                    {
-                        if (vertexShaderFile == "" && geometryShaderFile == "" && fragmentShaderFile == "") {
-                            setShader("");
-                        } else if (geometryShaderFile == "")
-                        {
-                            loadShader(vertexShaderFile, fragmentShaderFile);
-                        } else {
-                            loadShader(vertexShaderFile, geometryShaderFile, fragmentShaderFile);
-                        }
-                    }
-                }
-
-                if (shaderFileOrString == 2)
-                {
-                    setShader("");
                 }
             }
+
+            // vertex source editor
+            if (m_vertexSourceOpen)
+            {
+                imguiShaderEditor("Vertex", m_vertexSource, m_vertexSourceOpen, m_vertexSourceUpdated);
+            }
+
+            // geometry source editor
+            if (m_geometrySourceOpen)
+            {
+                imguiShaderEditor("Geometry", m_geometrySource, m_geometrySourceOpen, m_geometrySourceUpdated);
+            }
+
+            // vertex source editor
+            if (m_fragmentSourceOpen)
+            {
+                imguiShaderEditor("Fragment", m_fragmentSource, m_fragmentSourceOpen, m_fragmentSourceUpdated);
+            }
+
+            ImGui::Separator();
+
+            // TODO: Shader
+            // TODO: vertex layout
+
+            // Bound Texturess
+            if (ImGui::TreeNode(("Bind Textures##" + uidPrefix).c_str()))
+            {
+                auto allTextures = getParent()->getComponents<Texture, texture>();
+                int selected = -1;
+                if (m_texture != nullptr)
+                {
+                    for (int i = 0; i < allTextures.size(); i++)
+                    {
+                        if (allTextures[i]->getId() == m_texture->getId())
+                        {
+                            selected = i;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < allTextures.size(); i++)
+                {
+                    if (ImGui::Selectable((allTextures[i]->getId() + uidPrefix).c_str(), selected == i))
+                    {
+                        if (selected == i)
+                        {
+                            selected = -1;
+                            removeTexture();
+                        } else {
+                            selected = i;
+                            setTexture(allTextures[i]->getId());
+                        }
+                    }
+                }
+                ImGui::TreePop();
+            }
+
             ImGui::Separator();
         }
 
-        void Mesh::imguiShaderEditor(std::string& t_shaderText, bool &t_editing, bool &t_updated, int t_id)
+        void Mesh::imguiShaderProperties(std::string t_type, std::string &t_sourceFile, std::string &t_source, bool &t_open)
         {
-            std::string shaderType = "";
-            if (t_id == 0)
-            {
-                shaderType = "Vertex";
-            } else if (t_id == 1) {
-                shaderType = "Geometry";
-            } else if (t_id == 2) {
-                shaderType = "Fragment";
-            }
+            // uid suffix (oops)
+            std::string uidPrefix = t_type + m_id + getParent()->getEntityId();
 
-            std::string windowName = "Editing " + m_id + " " + shaderType + " Shader###" + std::to_string(t_id) + m_id + getParent()->getEntityId();
+            if (ImGui::TreeNode((t_type + " shader##" + uidPrefix).c_str()))
+            {
+                // display label for loading source
+                ImGui::Text("Load source file");
+
+                // file input bar and button to edit source
+                ImGui::InputTextWithHint(("Source filepath##" + uidPrefix).c_str(), "Filename...", &t_sourceFile);
+                if (ImGui::Button(("Load Source##" + uidPrefix).c_str()))
+                {
+                    if (t_sourceFile != "")
+                    {
+                        t_source = renderer::Shader::readFile(t_sourceFile);
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::Button(("Write Source##" + uidPrefix).c_str()))
+                {
+                    if (t_sourceFile != "")
+                    {
+                        // write source to input source file
+                        writeShader(t_sourceFile, t_source);
+                    }
+                }
+
+                ImGui::Separator();
+
+                // display lable for editing source
+                ImGui::Text("View/eidt source");
+
+                if (ImGui::Button(("Edit Source##" + uidPrefix).c_str()))
+                {
+                    t_open = true;
+                }
+
+                ImGui::Separator();
+
+                ImGui::TreePop();
+            }
+        }
+
+        void Mesh::imguiShaderEditor(std::string t_type, std::string& t_shaderText, bool &t_editing, bool &t_updated)
+        {
+            // uid suffix (oops)
+            std::string uidPrefix = t_type + m_id + getParent()->getEntityId();
+
+            // begin window with uid name
+            std::string windowName = "Editing " + m_id + " " + t_type + " Shader###" + uidPrefix;
             ImGui::Begin(windowName.c_str(), &t_editing);
             
-            std::string inputTextName = "##source" + std::to_string(t_id) + m_id + getParent()->getEntityId();
+            // input sourece
+            ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
             float height = ImGui::GetWindowHeight() - (ImGui::GetTextLineHeight() * 4.25f);
-            ImGui::InputTextMultiline(inputTextName.c_str(), &t_shaderText, ImVec2(ImGui::GetWindowWidth(), height));
+            ImGui::InputTextMultiline(("##source" + uidPrefix).c_str(), &t_shaderText, ImVec2(ImGui::GetWindowWidth(), height), flags);
 
-            std::string buttonName = "Save Changes##button" + std::to_string(t_id) + m_id + getParent()->getEntityId();
-            if (ImGui::Button(buttonName.c_str()))
+            // commit changes button 
+            if (ImGui::Button(("Save Changes##button" + uidPrefix).c_str()))
             {
                 t_updated = true;
             }
             
+            // end window
             ImGui::End();
         }
     }

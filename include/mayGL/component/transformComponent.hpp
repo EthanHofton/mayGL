@@ -44,6 +44,7 @@ namespace mayGL
             inline glm::mat4 getRoatationMatrix() { return m_rotationMatrix; }
             
             inline bool needsTransformUpdate() { return (m_transformUpdate || m_needsMatrixUpdate); }
+            inline void forceMatrixUpdate() { m_needsMatrixUpdate = true; }
 
             inline std::vector<Mesh*> getMeshes() { return m_meshes; }
             void addMesh(std::string t_meshId);
@@ -57,6 +58,11 @@ namespace mayGL
             void update() override;
             
         private:
+
+            // imgui
+            bool m_dragEdit;
+            glm::vec3 m_rotAxis;
+            // imgui
             
             glm::mat4 m_scaleMatrix;
             glm::mat4 m_translationMatrix;

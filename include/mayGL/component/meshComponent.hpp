@@ -23,7 +23,7 @@ namespace mayGL
             Mesh(entity::Entity *t_parent, std::string t_id, vertex::VertexLayout *t_layout, unsigned int t_primativeType);
             ~Mesh();
             
-            inline void setShader(std::string t_shaderId) { m_shaderId = t_shaderId; }
+            void setShader(std::string t_shaderId);
             void loadShader(std::string t_vertexFile, std::string t_fragFile);
             void loadShader(std::string t_vertexFile, std::string t_geomFile, std::string t_fragFile);
             void loadShaderString(std::string t_vertex, std::string t_frag);
@@ -53,13 +53,31 @@ namespace mayGL
             void setTexture(std::string t_textureId);
             inline Texture *getTexture() { return m_texture; }
             inline bool hasTexture() { return (m_texture != nullptr); }
-            inline void removeTexture() { m_texture = nullptr; }
+            void removeTexture();
 
             void imguiComponentInspector() override;
             
         private:
 
-            void imguiShaderEditor(std::string& t_shaderText, bool &t_editing, bool &t_updated, int t_id);
+            void writeShader(std::string t_filepath, std::string t_source);
+
+            // imgui
+            void imguiShaderEditor(std::string t_type, std::string& t_shaderText, bool &t_editing, bool &t_updated);
+            void imguiShaderProperties(std::string t_type, std::string &t_sourceFile, std::string &t_source, bool &t_open);
+            void imguiUpdateSources();
+            std::string m_vertexSourceFilepath;
+            std::string m_geometrySourceFilepath;
+            std::string m_fragmentSourceFilepath;
+            std::string m_vertexSource;
+            std::string m_geometrySource;
+            std::string m_fragmentSource;
+            bool m_vertexSourceOpen;
+            bool m_vertexSourceUpdated;
+            bool m_geometrySourceOpen;
+            bool m_geometrySourceUpdated;
+            bool m_fragmentSourceOpen;
+            bool m_fragmentSourceUpdated;
+            // imgui
             
             renderer::ShaderManager *m_shaderManager;
             

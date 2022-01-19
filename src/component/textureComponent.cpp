@@ -79,6 +79,7 @@ namespace mayGL
         void Texture::addMesh(std::string t_meshId)
         {
             m_meshes.push_back(getParent()->getComponent<Mesh, component::mesh>(t_meshId));
+            CORE_INFO("texture with id '{}' added mesh with id '{}'", m_id, t_meshId);
         }
 
         void Texture::addMeshes(std::vector<std::string> t_meshIds)
@@ -87,12 +88,15 @@ namespace mayGL
             {
                 addMesh(meshId);
             }
+
+            CORE_INFO("texture with id '{}' added {} mesh(es)", m_id, t_meshIds.size());
         }
 
         void Texture::addAllMeshes()
         {
             m_meshes.clear();
             m_meshes = getParent()->getComponents<Mesh, component::mesh>();
+            CORE_INFO("texture with id '{}' added all meshes", m_id);
         }
 
         void Texture::removeMesh(std::string t_meshId)
@@ -110,12 +114,14 @@ namespace mayGL
             
             if (found)
             {
+                CORE_INFO("texture with id '{}' removed mesh with id '{}'", m_id, t_meshId);
                 m_meshes.erase(m_meshes.begin() + index);
             }
         }
 
         void Texture::removeAllMeshes()
         {
+            CORE_INFO("texture with id '{}' removed all meshes", m_id);
             m_meshes.clear();
         }
         

@@ -18,6 +18,9 @@ namespace mayGL
             
             m_needsMatrixUpdate = true;
             m_transformUpdate = false;
+
+            m_rotAxis = glm::vec3(0,0,0);
+            m_dragEdit = true;
         }
         
         Transform::~Transform() {}
@@ -277,8 +280,8 @@ namespace mayGL
             Component::imguiComponentInspector();
 
             // should use drag input
-            static bool dragEdit = true;
-            ImGui::Checkbox("Drag Edit Values", &dragEdit);
+            std::string uidSuffix = "##transform" + m_id + getParent()->getEntityId();
+            ImGui::Checkbox(("Drag Edit Values" + uidSuffix).c_str(), &m_dragEdit);
             ImGui::Separator();
 
             // needs matrix update
@@ -288,11 +291,11 @@ namespace mayGL
             // Pos
             glm::vec3 newPos = m_pos;
             ImGui::Text("m_pos");
-            if (dragEdit)
+            if (m_dragEdit)
             {
-                ImGui::DragFloat3("xyz pos", &newPos[0], 0.1f);
+                ImGui::DragFloat3(("xyz pos" + uidSuffix).c_str(), &newPos[0], 0.1f);
             } else {
-                ImGui::InputFloat3("xyz pos", &newPos[0]);
+                ImGui::InputFloat3(("xyz pos" + uidSuffix).c_str(), &newPos[0]);
             }
             if (newPos != m_pos)
             {
@@ -303,11 +306,11 @@ namespace mayGL
             // Scale
             glm::vec3 newScale = m_scale;
             ImGui::Text("m_scale");
-            if (dragEdit)
+            if (m_dragEdit)
             {
-                ImGui::DragFloat3("xyz scale", &newScale[0], 0.1f);
+                ImGui::DragFloat3(("xyz scale" + uidSuffix).c_str(), &newScale[0], 0.1f);
             } else {
-                ImGui::InputFloat3("xyz scale", &newScale[0]);
+                ImGui::InputFloat3(("xyz scale" + uidSuffix).c_str(), &newScale[0]);
             }
             if (newScale != m_scale)
             {
@@ -317,24 +320,23 @@ namespace mayGL
 
             // Rotation
             float deg = m_roatation;
-            static glm::vec3 m_axis = glm::vec3(0.0f);
             ImGui::Text("m_rotation");
             bool update = false;
 
-            if (dragEdit)
+            if (m_dragEdit)
             {
-                update = ImGui::SliderAngle("deg", &deg);
-                bool axisUpdate = ImGui::SliderFloat3("axis of rotation", &m_axis[0], -1.0f, 1.0f);
+                update = ImGui::SliderAngle(("deg" + uidSuffix).c_str(), &deg);
+                bool axisUpdate = ImGui::SliderFloat3(("axis of rotation" + uidSuffix).c_str(), &m_rotAxis[0], -1.0f, 1.0f);
                 update = update || axisUpdate;
             } else {
-                update = ImGui::InputFloat("deg", &deg);
-                bool axisUpdate = ImGui::InputFloat3("axis of rotation", &m_axis[0]);
+                update = ImGui::InputFloat(("deg" + uidSuffix).c_str(), &deg);
+                bool axisUpdate = ImGui::InputFloat3(("axis of rotation" + uidSuffix).c_str(), &m_rotAxis[0]);
                 update = update || axisUpdate;
                 deg = math::degToRad(deg);
             }
-            if (update && m_axis != math::c_vec3Zero)
+            if (update && m_rotAxis != math::c_vec3Zero)
             {
-                setRotation(deg, m_axis);
+                setRotation(deg, m_rotAxis);
             }            
             ImGui::Separator();
 
@@ -354,11 +356,11 @@ namespace mayGL
                 }
             }
 
-            if (ImGui::TreeNode("Bind Meshes"))
+            if (ImGui::TreeNode(("Bind Meshes" + uidSuffix).c_str()))
             {
                 for (int i = 0; i < allMeshes.size(); i++)
                 {
-                    if (ImGui::Selectable(allMeshes[i]->getId().c_str(), (bool)meshSelections[i]))
+                    if (ImGui::Selectable((allMeshes[i]->getId() + uidSuffix).c_str(), (bool)meshSelections[i]))
                     {
                         if ((bool)meshSelections[i] == true)
                         {

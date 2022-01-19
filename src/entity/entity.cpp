@@ -67,6 +67,12 @@ namespace mayGL
                 t_e->child(this);
                 active(m_parent->isActive());
             }
+
+            for (auto transform : getComponents<component::Transform, component::transform>())
+            {
+                transform->forceMatrixUpdate();
+            }
+
             std::string parent_id = (t_e == nullptr) ? "nullptr" : t_e->getEntityId();
             CORE_INFO("entity with id '{0}' set parent to entity with id '{1}'", m_id, parent_id);
         }

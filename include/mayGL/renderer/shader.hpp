@@ -27,7 +27,7 @@ namespace mayGL
             void createFromFiles(std::string t_vertFile, std::string t_fragFile);
             void createFromFiles(std::string t_vertFile, std::string t_geomFile, std::string t_fragFile);
             
-            std::string readFile(std::string t_filepath);
+            static std::string readFile(std::string t_filepath);
             
             unsigned int getUniformLocation(std::string t_unifromId);
             void addUniform(std::string t_unifromId);
