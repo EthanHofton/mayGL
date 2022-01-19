@@ -210,43 +210,45 @@ namespace mayGL
 
         void PhysicsWorld::customImguiProperties(std::vector<entity::Entity*> t_entites)
         {
+            std::string uidSuffex = "##physics" + getEntityId() + std::to_string(getEntityUID());
+
             static bool dragEdit = true;
-            ImGui::Checkbox("Drag Edit Values", &dragEdit);
+            ImGui::Checkbox(("Drag Edit Values" + uidSuffex).c_str(), &dragEdit);
             ImGui::Separator();
 
             // gravity controller
             if (dragEdit)
             {
-                ImGui::DragFloat3("m_gravity", &m_gravity[0], 0.1f);
+                ImGui::DragFloat3(("m_gravity" + uidSuffex).c_str(), &m_gravity[0], 0.1f);
             } else {
-                ImGui::InputFloat3("m_gravity", &m_gravity[0]);
+                ImGui::InputFloat3(("m_gravity" + uidSuffex).c_str(), &m_gravity[0]);
             }
             ImGui::Separator();
 
-            ImGui::Checkbox("m_gravityAffected", &m_gravityAffected);
+            ImGui::Checkbox(("m_gravityAffected" + uidSuffex).c_str(), &m_gravityAffected);
             ImGui::Separator();
 
             // m_physicsEntites
-            // add bound meshes
-            std::vector<char> entitySelections;
-            entitySelections.resize(t_entites.size());
-            std::fill(entitySelections.begin(), entitySelections.end(), false);
-            for (int i = 0; i < t_entites.size(); i++)
+            if (ImGui::TreeNode(("Physics Entites" + uidSuffex).c_str()))
             {
-                for (auto e : m_physicsEntites)
-                {
-                    if (e->getEntityId() == t_entites[i]->getEntityId())
-                    {
-                        entitySelections[i] = true;
-                    }
-                }
-            }
-
-            if (ImGui::TreeNode("Physics Entites"))
-            {
+                // add bound meshes
+                std::vector<char> entitySelections;
+                entitySelections.resize(t_entites.size());
+                std::fill(entitySelections.begin(), entitySelections.end(), false);
                 for (int i = 0; i < t_entites.size(); i++)
                 {
-                    if (ImGui::Selectable(t_entites[i]->getEntityId().c_str(), (bool)entitySelections[i]))
+                    for (auto e : m_physicsEntites)
+                    {
+                        if (e->getEntityId() == t_entites[i]->getEntityId())
+                        {
+                            entitySelections[i] = true;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < t_entites.size(); i++)
+                {
+                    if (ImGui::Selectable((t_entites[i]->getEntityId() + uidSuffex).c_str(), (bool)entitySelections[i]))
                     {
                         if ((bool)entitySelections[i] == true)
                         {

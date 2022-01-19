@@ -52,6 +52,8 @@ namespace mayGL
             
             void entityId(std::string t_id);
             inline std::string getEntityId() { return m_id; }
+
+            inline int getEntityUID() { return m_entityUID; }
             
             void addComponent(component::Component* t_component);
             component::Component *findComponent(std::string t_id);

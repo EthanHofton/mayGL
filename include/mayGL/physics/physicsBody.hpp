@@ -48,7 +48,15 @@ namespace mayGL
 
             void update() override {}
 
+            void imguiComponentInspector() override;
+
         private:
+
+            // imgui
+            bool m_dragEdit;
+            glm::vec3 m_imguiDf;
+            glm::vec3 m_imguiDv;
+            // imgui
 
             glm::vec3 m_velocity;
             glm::vec3 m_force;

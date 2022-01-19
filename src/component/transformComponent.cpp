@@ -341,23 +341,23 @@ namespace mayGL
             ImGui::Separator();
 
             // add bound meshes
-            auto allMeshes = getParent()->getComponents<Mesh, mesh>();
-            std::vector<char> meshSelections;
-            meshSelections.resize(allMeshes.size());
-            std::fill(meshSelections.begin(), meshSelections.end(), false);
-            for (int i = 0; i < allMeshes.size(); i++)
-            {
-                for (auto mesh : m_meshes)
-                {
-                    if (mesh->getId() == allMeshes[i]->getId())
-                    {
-                        meshSelections[i] = true;
-                    }
-                }
-            }
-
             if (ImGui::TreeNode(("Bind Meshes" + uidSuffix).c_str()))
             {
+                auto allMeshes = getParent()->getComponents<Mesh, mesh>();
+                std::vector<char> meshSelections;
+                meshSelections.resize(allMeshes.size());
+                std::fill(meshSelections.begin(), meshSelections.end(), false);
+                for (int i = 0; i < allMeshes.size(); i++)
+                {
+                    for (auto mesh : m_meshes)
+                    {
+                        if (mesh->getId() == allMeshes[i]->getId())
+                        {
+                            meshSelections[i] = true;
+                        }
+                    }
+                }
+
                 for (int i = 0; i < allMeshes.size(); i++)
                 {
                     if (ImGui::Selectable((allMeshes[i]->getId() + uidSuffix).c_str(), (bool)meshSelections[i]))
@@ -376,7 +376,6 @@ namespace mayGL
                 ImGui::TreePop();
             }
 
-            ImGui::Separator();
 
             ImGui::Spacing();
         }
