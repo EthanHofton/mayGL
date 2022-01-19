@@ -35,7 +35,7 @@ namespace mayGL
             }
         }
 
-        void Page::imguiShowScene()
+        void Page::imguiShowSceneHierarchy()
         {
             std::string pageTitle = m_pageId + ": Scene";
             ImGui::Begin(pageTitle.c_str());

@@ -27,6 +27,10 @@ namespace mayGL
         
         InputManager::InputManager()
         {
+            m_graphics = Graphics::instance();
+
+            m_disableInput = false;
+
             m_mouseFirst = true;
             m_mouseMovement = false;
             
@@ -68,7 +72,7 @@ namespace mayGL
                     break;
             }
             
-            return (m_mouseState & mask) && !(ImGui::GetIO().WantCaptureMouse);
+            return (m_mouseState & mask) && !(ImGui::GetIO().WantCaptureMouse) && !m_disableInput;
         }
         
         bool InputManager::mouseButtonPressed(MOUSE_BUTTONS t_button)
@@ -97,7 +101,7 @@ namespace mayGL
                     break;
             }
             
-            return !(m_prevMouseState & mask) && (m_mouseState & mask) && !(ImGui::GetIO().WantCaptureMouse);
+            return !(m_prevMouseState & mask) && (m_mouseState & mask) && !(ImGui::GetIO().WantCaptureMouse) && !m_disableInput;
         }
         
         bool InputManager::mouseButtonReleased(MOUSE_BUTTONS t_button)
@@ -126,7 +130,7 @@ namespace mayGL
                     break;
             }
             
-            return (m_prevMouseState & mask) && !(m_mouseState & mask) && !(ImGui::GetIO().WantCaptureMouse);
+            return (m_prevMouseState & mask) && !(m_mouseState & mask) && !(ImGui::GetIO().WantCaptureMouse) && !m_disableInput;
         }
         
         void InputManager::giveEvents(SDL_Event t_e)
@@ -135,7 +139,7 @@ namespace mayGL
             
             if (m_event.type == SDL_MOUSEMOTION)
             {
-                m_mouseMovement = !(ImGui::GetIO().WantCaptureMouse);
+                m_mouseMovement = !(ImGui::GetIO().WantCaptureMouse) && !m_disableInput;
                 m_dmPos.x = m_event.motion.xrel;
                 m_dmPos.y = -(m_event.motion.yrel);
             }

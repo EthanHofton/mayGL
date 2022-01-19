@@ -42,6 +42,11 @@ namespace mayGL
                 {
                     continue;
                 }
+
+                if (!mesh->hasShader())
+                {
+                    continue;
+                }
                 
                 auto vertexLayout = mesh->getLayout();
                 auto primativeType = mesh->getPrimativeType();
@@ -186,7 +191,7 @@ namespace mayGL
             glBufferSubData(GL_ARRAY_BUFFER, 0, t_call.m_vertexDataOffset, t_call.m_vertexArray);
         }
 
-        void RenderBatch::draw(glm::mat4 &t_view, glm::mat4 &t_projection, glm::vec3 t_camPos)
+        void RenderBatch::draw(glm::mat4 &t_view, glm::mat4 &t_projection, glm::vec3 t_camPos, float t_time)
         {
             for (auto &call : m_drawCalls)
             {
@@ -211,6 +216,7 @@ namespace mayGL
                 glUniformMatrix4fv(shader->getUniformLocation("u_Proj"), 1, GL_FALSE, &t_projection[0][0]);
                 glUniformMatrix4fv(shader->getUniformLocation("u_View"), 1, GL_FALSE, &t_view[0][0]);
                 glUniform3f(shader->getUniformLocation("u_CamPos"), t_camPos.x, t_camPos.y, t_camPos.z);
+                glUniform1f(shader->getUniformLocation("u_Time"), t_time);
                 
                 glBindVertexArray(call.m_VAO);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, call.m_IBO);

@@ -34,6 +34,8 @@ namespace mayGL
             
             glGenVertexArrays(1, &m_vao);
             glBindVertexArray(m_vao);
+
+            m_time = 0;
         }
         
         Renderer::~Renderer()
@@ -60,6 +62,7 @@ namespace mayGL
             glm::mat4 projectionMatrix = glm::mat4(1.0f);
             glm::mat4 viewMatrix = glm::mat4(1.0f);
             glm::vec3 camPos = glm::vec3(0.0f);
+            m_time += core::Timer::instance()->getDeltaTime();
             
             if (m_hasCamera)
             {
@@ -75,7 +78,7 @@ namespace mayGL
             while (!m_renderBatchQueue.empty())
             {
                 auto batch = m_renderBatchQueue.front();
-                batch->draw(viewMatrix, projectionMatrix, camPos);
+                batch->draw(viewMatrix, projectionMatrix, camPos, m_time);
                 m_renderBatchQueue.pop();
             }
         }

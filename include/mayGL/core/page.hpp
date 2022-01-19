@@ -46,7 +46,7 @@ namespace mayGL
 
             inline std::vector<entity::Entity*> getEntites() { return m_entities; }
 
-            void imguiShowScene();
+            void imguiShowSceneHierarchy();
             
         private:
 

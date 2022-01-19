@@ -39,6 +39,22 @@ namespace mayGL
             
             void useShader();
             void clearShader();
+
+            inline bool hasVertexShaderFile() { return !(m_vertexShaderFile == ""); }
+            inline bool hasGeometryShaderFile() { return !(m_geometryShaderFile == ""); }
+            inline bool hasFragmentShaderFile() { return !(m_fragmentShaderFile == ""); }
+
+            inline bool hasVertexShader() { return !(m_vertexShader == ""); }
+            inline bool hasGeometryShader() { return !(m_geometryShader == ""); }
+            inline bool hasFragmentShader() { return !(m_fragmentShader == ""); }
+
+            inline std::string getVertexShaderFile() { return m_vertexShaderFile; }
+            inline std::string getGeometryShaderFile() { return m_geometryShaderFile; }
+            inline std::string getFragmentShaderFile() { return m_fragmentShaderFile; }
+
+            inline std::string getVertexShader() { return m_vertexShader; }
+            inline std::string getGeometryShader() { return m_geometryShader; }
+            inline std::string getFragmentShader() { return m_fragmentShader; }
             
         private:
             
@@ -56,6 +72,14 @@ namespace mayGL
             void compileShader(std::string t_vertex, std::string t_frag);
             void compileShader(std::string t_vertex, std::string t_geometry, std::string t_frag);
             void addShader(unsigned int t_program, const char *t_shaderCode, GLenum t_shaderType);
+
+            std::string m_vertexShaderFile;
+            std::string m_geometryShaderFile;
+            std::string m_fragmentShaderFile;
+
+            std::string m_vertexShader;
+            std::string m_geometryShader;
+            std::string m_fragmentShader;
         };
     }
 }

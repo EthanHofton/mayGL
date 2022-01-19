@@ -61,7 +61,7 @@ namespace mayGL
             
             void batchBegin();
             void batchEnd();
-            void draw(glm::mat4 &t_view, glm::mat4 &t_projection, glm::vec3 t_camPos);
+            void draw(glm::mat4 &t_view, glm::mat4 &t_projection, glm::vec3 t_camPos, float t_time);
             
             // static/dynamic draws
             // static/dynamic draws

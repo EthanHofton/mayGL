@@ -10,6 +10,7 @@
 
 #include <glm/glm.hpp>
 #include "logger.hpp"
+#include "graphics.hpp"
 
 namespace mayGL
 {
@@ -41,21 +42,24 @@ namespace mayGL
         public:
             
             inline bool keyDown(SDL_Scancode t_scancode)
-            { return m_keyboardStates[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard); }
+            { return m_keyboardStates[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard) && !m_disableInput; }
             inline bool keyPressed(SDL_Scancode t_scancode)
-            { return m_keyboardStates[t_scancode] && !m_prevKeyState[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard); }
+            { return m_keyboardStates[t_scancode] && !m_prevKeyState[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard) && !m_disableInput; }
             inline bool keyReleased(SDL_Scancode t_scancode)
-            { return !m_keyboardStates[t_scancode] && m_prevKeyState[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard); }
+            { return !m_keyboardStates[t_scancode] && m_prevKeyState[t_scancode] && !(ImGui::GetIO().WantCaptureKeyboard) && !m_disableInput; }
             
             bool mouseButtonDown(MOUSE_BUTTONS t_button);
             bool mouseButtonPressed(MOUSE_BUTTONS t_button);
             bool mouseButtonReleased(MOUSE_BUTTONS t_button);
+
+            inline void disableInput(bool t_b) { m_disableInput = t_b; }
+            inline bool disableInput() { return m_disableInput; }
             
             inline glm::vec2 getMousePos() { return m_mPos; }
             inline glm::vec2 getDeltaMousePos() { return m_dmPos; }
             
             void giveEvents(SDL_Event t_e);
-            inline bool mouseMotion() { return (m_mouseMovement && !(ImGui::GetIO().WantCaptureMouse)); }
+            inline bool mouseMotion() { return (m_mouseMovement && !(ImGui::GetIO().WantCaptureMouse) && !m_disableInput); }
             inline void mouseMotion(bool t_m) { m_mouseMovement = t_m; }
             
             inline void update()
@@ -64,6 +68,10 @@ namespace mayGL
             { memcpy(m_prevKeyState, m_keyboardStates, m_keyLeangh); m_prevMouseState = m_mouseState; }
             
         private:
+
+            Graphics *m_graphics;
+
+            bool m_disableInput;
             
             Uint8 *m_prevKeyState;
             const Uint8 *m_keyboardStates;

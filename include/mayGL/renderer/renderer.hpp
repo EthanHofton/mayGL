@@ -2,6 +2,7 @@
 #define renderer_hpp
 
 #include "renderBatch.hpp"
+#include <mayGL/core/timer.hpp>
 
 namespace mayGL
 {
@@ -40,6 +41,8 @@ namespace mayGL
             ShaderManager *m_shaderManager;
             
             static Renderer* s_instance;
+
+            float m_time;
         };
     }
 }

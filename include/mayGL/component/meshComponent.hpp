@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <glm/glm.hpp>
+#include <sstream>
+#include <string>
 
 #include "component.hpp"
 #include "../vertex/vertexLayout.hpp"
@@ -28,6 +30,7 @@ namespace mayGL
             void loadShaderString(std::string t_vertex, std::string t_geom, std::string t_frag);
             renderer::Shader *getShader();
             inline std::string getShaderId() { return m_shaderId; }
+            inline bool hasShader() { return !(m_shaderId == ""); }
             
             inline void *getIndices() { return m_indices; }
             inline void *getWorldVertices() { return m_worldVertices; }
@@ -51,8 +54,12 @@ namespace mayGL
             inline Texture *getTexture() { return m_texture; }
             inline bool hasTexture() { return (m_texture != nullptr); }
             inline void removeTexture() { m_texture = nullptr; }
+
+            void imguiComponentInspector() override;
             
         private:
+
+            void imguiShaderEditor(std::string& t_shaderText, bool &t_editing, bool &t_updated, int t_id);
             
             renderer::ShaderManager *m_shaderManager;
             

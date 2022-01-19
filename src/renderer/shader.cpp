@@ -7,6 +7,13 @@ namespace mayGL
         Shader::Shader()
         {
             m_shaderId = 0;
+            m_vertexShader = "";
+            m_geometryShader = "";
+            m_fragmentShader = "";
+
+            m_vertexShaderFile = "";
+            m_geometryShaderFile = "";
+            m_fragmentShaderFile = "";
         }
         
         Shader::~Shader()
@@ -16,29 +23,43 @@ namespace mayGL
         
         void Shader::createFromString(std::string t_vertex, std::string t_frag)
         {
-            compileShader(t_vertex, t_frag);
+            m_vertexShader = t_vertex;
+            m_fragmentShader = t_frag;
+
+            compileShader(m_vertexShader, m_fragmentShader);
         }
         
         void Shader::createFromString(std::string t_vertex, std::string t_geom, std::string t_frag)
         {
-            compileShader(t_vertex, t_geom, t_frag);
+            m_vertexShader = t_vertex;
+            m_geometryShader = t_geom;
+            m_fragmentShader = t_frag;
+
+            compileShader(m_vertexShader, m_geometryShader, m_fragmentShader);
         }
         
         void Shader::createFromFiles(std::string t_vertFile, std::string t_fragFile)
         {
-            std::string vertexCode = readFile(t_vertFile);
-            std::string fragmentCode = readFile(t_fragFile);
+            m_vertexShaderFile = t_vertFile;
+            m_fragmentShaderFile = t_fragFile;
+
+            m_vertexShader = readFile(m_vertexShaderFile);
+            m_fragmentShader = readFile(m_fragmentShaderFile);
             
-            compileShader(vertexCode, fragmentCode);
+            compileShader(m_vertexShader, m_fragmentShader);
         }
         
         void Shader::createFromFiles(std::string t_vertFile, std::string t_geomFile, std::string t_fragFile)
         {
-            std::string vertexCode = readFile(t_vertFile);
-            std::string geometryCode = readFile(t_geomFile);
-            std::string fragmentCode = readFile(t_fragFile);
+            m_vertexShaderFile = t_vertFile;
+            m_geometryShaderFile = t_geomFile;
+            m_fragmentShaderFile = t_fragFile;
+
+            m_vertexShader = readFile(m_vertexShaderFile);
+            m_geometryShader = readFile(m_geometryShaderFile);
+            m_fragmentShader = readFile(m_fragmentShaderFile);
             
-            compileShader(vertexCode, geometryCode, fragmentCode);
+            compileShader(m_vertexShader, m_geometryShader, m_fragmentShader);
         }
         
         std::string Shader::readFile(std::string t_filepath)
@@ -183,6 +204,7 @@ namespace mayGL
             addUniform("u_View");
             addUniform("u_TexData");
             addUniform("u_CamPos");
+            addUniform("u_Time");
         }
         
         void Shader::compileShader(std::string t_vertex, std::string t_geometry, std::string t_frag)
@@ -226,6 +248,7 @@ namespace mayGL
             addUniform("u_View");
             addUniform("u_TexData");
             addUniform("u_CamPos");
+            addUniform("u_Time");
         }
         
         void Shader::addShader(unsigned int t_program, const char *t_shaderCode, GLenum t_shaderType)
