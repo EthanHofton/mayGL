@@ -95,8 +95,11 @@ namespace mayGL
         
         void Shader::addUniform(std::string t_unifromId)
         {
-            CORE_TRACE("added uniform '{0}'", t_unifromId);
-            m_uniformMap[t_unifromId] = glGetUniformLocation(m_shaderId, t_unifromId.c_str());
+            if (m_uniformMap.find(t_unifromId) == m_uniformMap.end())
+            {
+                CORE_TRACE("added uniform '{0}'", t_unifromId);
+                m_uniformMap[t_unifromId] = glGetUniformLocation(m_shaderId, t_unifromId.c_str());
+            }
         }
         
         void Shader::setUniform1f(std::string t_uniformId, float t_val)

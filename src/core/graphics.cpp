@@ -124,11 +124,7 @@ namespace mayGL
             glEnable(GL_PROGRAM_POINT_SIZE);
             
             relativeMouse(m_relativeMouse);
-            wireframe(m_wireframe);
-            
-            // OpenGL face culling
-//            glEnable(GL_CULL_FACE);
-//            glCullFace(FL_FRONT);
+            wireframe(m_wireframe);          
             
             CORE_INFO("initalisation completed");
             

@@ -62,6 +62,15 @@ namespace mayGL
             void batchBegin();
             void batchEnd();
             void draw(glm::mat4 &t_view, glm::mat4 &t_projection, glm::vec3 t_camPos, float t_time);
+
+            // face culling for batch
+            inline void enableFaceCulling() { m_cullFace = true; }
+            inline void disableFaceCulling() { m_cullFace = false; }
+            inline void faceCull(int t_face) { glCullFace(t_face); }
+
+            // wireframe for batch
+            inline void enableWireframe() { m_batchWireframe = true; }
+            inline void disableWireframe() { m_batchWireframe = false; }
             
             // static/dynamic draws
             // static/dynamic draws
@@ -74,6 +83,12 @@ namespace mayGL
             void initDrawCall(DrawCall &t_call, int t_primativeType, vertex::VertexLayout *t_vertexLayout, std::string t_shaderId, std::string t_key);
             
         private:
+
+            // face culling
+            bool m_cullFace;
+
+            // batch wireframe
+            bool m_batchWireframe;
             
             std::vector<DrawCall> m_drawCalls;
             ShaderManager *m_shaderManager;

@@ -33,6 +33,11 @@ namespace mayGL
 
             inline void update() override {}
 
+            inline component::Mesh* getModelMesh() { return m_modelMesh; }
+            inline component::Transform *getModelTransform() { return m_modelTransform; }
+            inline std::string getModelTransformId() { return m_transformID; }
+            inline std::string getModelMeshId() { return m_meshID; }
+
         private:
 
             void loadOBJ(std::string t_path, component::Mesh *t_mesh);

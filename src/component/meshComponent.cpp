@@ -234,10 +234,10 @@ namespace mayGL
                 ImGui::LabelText("m_indices", "%s", indicesPointerString.c_str());
 
                 // vertice size in bytes
-                ImGui::LabelText("m_verticesSize", "%i bytes", m_verticesSize);
+                ImGui::LabelText("m_verticesSize", "%i bytes (%.2g Mb)", m_verticesSize, ((float)m_verticesSize / (1024.0f*1024.0f)));
 
                 // indice size in bytes
-                ImGui::LabelText("m_indeicesSize", "%i bytes", m_indeicesSize);
+                ImGui::LabelText("m_indeicesSize", "%i bytes (%.2g Mb)", m_indeicesSize, ((float)m_indeicesSize / (1024.0f*1024.0f)));
 
                 // vertice count
                 int verticeCount = m_verticesSize / m_vertexLayout->getVertexStride();
@@ -245,6 +245,49 @@ namespace mayGL
 
                 // indice count
                 ImGui::LabelText("indice count", "%i indices", (int)(m_indeicesSize / sizeof(unsigned int)));
+
+                // triangle count
+                ImGui::LabelText("triangle count", "%i triangles", (int)(verticeCount / 3));
+
+                // primative type
+                std::string primativeType;
+                switch (m_primativeType)
+                {
+                case GL_POINTS:
+                    primativeType = "GL_POINTS";
+                    break;
+                case GL_LINES:
+                    primativeType = "GL_LINES";
+                    break;
+                case GL_LINE_STRIP:
+                    primativeType = "GL_LINE_STRIP";
+                    break;
+                case GL_LINE_LOOP:
+                    primativeType = "GL_LINE_LOOP";
+                    break;
+                case GL_POLYGON:
+                    primativeType = "GL_POLYGON";
+                    break;
+                case GL_TRIANGLES:
+                    primativeType = "GL_TRIANGLES";
+                    break;
+                case GL_TRIANGLE_STRIP:
+                    primativeType = "GL_TRIANGLE_STRIP";
+                    break;
+                case GL_TRIANGLE_FAN:
+                    primativeType = "GL_TRIANGLE_FAN";
+                    break;
+                case GL_QUADS:
+                    primativeType = "GL_QUADS";
+                    break;
+                case GL_QUAD_STRIP:
+                    primativeType = "GL_QUAD_STRIP";
+                    break;
+                default:
+                    primativeType = std::to_string(m_primativeType);
+                    break;
+                }
+                ImGui::LabelText("m_primativeType", "%s", primativeType.c_str());
             }
             ImGui::Separator();
 

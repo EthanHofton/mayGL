@@ -26,6 +26,7 @@ namespace mayGL
             textureAtlas,
             physicsBody,
             collider,
+            material,
             custom
         };
         

@@ -81,6 +81,8 @@ namespace mayGL
 
             t_mesh->setVertices(&vertices[0], sizeof(modelVertex)*vertices.size());
             t_mesh->setIndices(&indices[0], sizeof(unsigned int)*indices.size());
+
+            CORE_INFO("Model with path {} loaded", t_path);
         }
     }
 }

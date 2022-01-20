@@ -31,6 +31,9 @@ namespace mayGL
             case collider:
                 type = "collider";
                 break;
+            case material:
+                type = "material";
+                break;
             case custom:
                 type = "custom";
                 break;

@@ -7,6 +7,9 @@ namespace mayGL
         RenderBatch::RenderBatch()
         {
             m_shaderManager = ShaderManager::instance();
+
+            m_cullFace = false;
+            m_batchWireframe = false;
         }
         
         RenderBatch::~RenderBatch()
@@ -51,6 +54,8 @@ namespace mayGL
                 auto vertexLayout = mesh->getLayout();
                 auto primativeType = mesh->getPrimativeType();
                 auto shader = mesh->getShaderId();
+                int maxNumVertices = GAME_CONFIG()["max_num_vertices"].GetInt();
+                int maxNumIndices = GAME_CONFIG()["max_num_indices"].GetInt();
                 
                 std::string key = std::to_string(primativeType) + shader;
                 
@@ -76,6 +81,16 @@ namespace mayGL
                 }
                 
                 // TODO: buffer overflow
+                // if the number of vertices is grater then max vetices, wrap the call
+                if (mesh->getVerticesSize() / vertexLayout->getVertexStride() > maxNumVertices)
+                {
+                    CORE_WARN("renderbatch buffer vertes overflow");
+                }
+
+                if (mesh->getIndicesSize() / sizeof(unsigned int) > maxNumIndices)
+                {
+                    CORE_WARN("renderbatch buffer index overflow");
+                }
                 
                 // TODO: textures
                 if (mesh->hasTexture())
@@ -131,12 +146,13 @@ namespace mayGL
             
             // gen vertices
             int maxNumVertices = GAME_CONFIG()["max_num_vertices"].GetInt();
+            int maxNumIndices = GAME_CONFIG()["max_num_indices"].GetInt();
             glGenVertexArrays(1, &t_call.m_VAO);
             glBindVertexArray(t_call.m_VAO);
             
             glGenBuffers(1, &t_call.m_IBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, t_call.m_IBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxNumVertices*sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxNumIndices*sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW);
             
             glGenBuffers(1, &t_call.m_VBO);
             glBindBuffer(GL_ARRAY_BUFFER, t_call.m_VBO);
@@ -145,7 +161,7 @@ namespace mayGL
             t_call.m_vertexLayout->init();
             
             t_call.m_vertexArray = calloc(maxNumVertices, t_call.m_vertexLayout->getVertexStride());
-            t_call.m_indexArray = calloc(maxNumVertices, sizeof(unsigned int));
+            t_call.m_indexArray = calloc(maxNumIndices, sizeof(unsigned int));
         }
         
         void RenderBatch::batchBegin()
@@ -159,8 +175,9 @@ namespace mayGL
         void RenderBatch::resetDrawCall(DrawCall &t_call)
         {
             int maxNumVertices = GAME_CONFIG()["max_num_vertices"].GetInt();
+            int maxNumIndices = GAME_CONFIG()["max_num_indices"].GetInt();
             memset(t_call.m_vertexArray, 0, maxNumVertices * t_call.m_vertexLayout->getVertexStride());
-            memset(t_call.m_indexArray, 0, maxNumVertices * sizeof(unsigned int));
+            memset(t_call.m_indexArray, 0, maxNumIndices * sizeof(unsigned int));
             
             t_call.m_indexDataOffset = 0;
             t_call.m_indexValueOffset = 0;
@@ -212,6 +229,15 @@ namespace mayGL
                     tex->use();
                 }
                 
+                if (m_batchWireframe)
+                {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                }
+
+                if (m_cullFace)
+                {
+                    glEnable(GL_CULL_FACE);
+                }
                 
                 glUniformMatrix4fv(shader->getUniformLocation("u_Proj"), 1, GL_FALSE, &t_projection[0][0]);
                 glUniformMatrix4fv(shader->getUniformLocation("u_View"), 1, GL_FALSE, &t_view[0][0]);
@@ -222,9 +248,16 @@ namespace mayGL
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, call.m_IBO);
                 
                 glDrawElements(call.m_primativeType, (int)call.m_indexDataOffset / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+
+                if (m_batchWireframe)
+                {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                }
                 
-                // glBindVertexArray(0);
-                // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                if (m_cullFace)
+                {
+                    glDisable(GL_CULL_FACE);
+                }
             }
         }
     }
