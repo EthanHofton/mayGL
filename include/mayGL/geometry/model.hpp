@@ -2,6 +2,7 @@
 #define model_hpp
 
 #include <mayGL/entity/entity.hpp>
+#include <mayGL/component/materialComponent.hpp>
 
 #include <unordered_map>
 #include <glm/gtx/hash.hpp>

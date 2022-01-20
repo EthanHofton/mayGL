@@ -17,12 +17,12 @@ namespace mayGL
             m_modelTransform = new component::Transform(this, m_transformID);
             m_modelMesh = new component::Mesh(this, m_meshID, vLayout, GL_TRIANGLES);
 
+            addComponent(m_modelMesh);
+            addComponent(m_modelTransform);
+
             loadOBJ(t_modelFilepath, m_modelMesh);
 
             m_modelMesh->loadShader("light.vertex", "light.fragment");
-
-            addComponent(m_modelMesh);
-            addComponent(m_modelTransform);
 
             m_modelTransform->addMesh(m_meshID);
         }
@@ -41,7 +41,7 @@ namespace mayGL
             std::string warning;
             std::string error;
 
-            if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, modelFile.c_str()))
+            if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, modelFile.c_str(), "models/xwing/"))
             {
                 CORE_CRITICAL("tinyobj error: {} {}", warning, error);
             }
@@ -77,6 +77,19 @@ namespace mayGL
 
                     indices.push_back(uniqueVertices[v]);
                 }
+            }
+
+            for (auto &mat : materials)
+            {
+                std::string matId = mat.name;
+                auto matComp = new component::Material(this, matId, matId);
+                matComp->setAmbient({mat.ambient[0], mat.ambient[1], mat.ambient[2]});
+                matComp->setDiffuse({mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]});
+                matComp->setSpecular({mat.specular[0], mat.specular[1], mat.specular[2]});
+                matComp->setShininess(mat.shininess);
+                matComp->addMesh(m_meshID);
+
+                addComponent(matComp);
             }
 
             t_mesh->setVertices(&vertices[0], sizeof(modelVertex)*vertices.size());
