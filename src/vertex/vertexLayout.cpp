@@ -38,5 +38,18 @@ namespace mayGL
                 offset += vertexComponent->getCount() * vertexComponent->getVertexComponentStride();
             }
         }
+
+        bool VertexLayout::hasComponent(VertexComponentTypes t_type)
+        {
+            for (auto component : m_vertexComponents)
+            {
+                if (component->getType() == t_type)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

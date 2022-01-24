@@ -50,10 +50,12 @@ namespace mayGL
             
             inline void update() override {}
 
-            void setTexture(std::string t_textureId);
-            inline Texture *getTexture() { return m_texture; }
-            inline bool hasTexture() { return (m_texture != nullptr); }
-            void removeTexture();
+            inline std::vector<Texture*> getTextures() { return m_textures; }
+            void addTexture(std::string t_texId);
+            void addTextures(std::vector<std::string> t_texIds);
+            void addAllTextures();
+            void removeTexture(std::string t_texId);
+            void removeAllTextures();
 
             void imguiComponentInspector() override;
             
@@ -94,7 +96,7 @@ namespace mayGL
             unsigned int m_verticesSize; // BYTES
             unsigned int m_indeicesSize; // BYTES
 
-            Texture *m_texture;
+            std::vector<Texture *> m_textures;
             
         };
     }

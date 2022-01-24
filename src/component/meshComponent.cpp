@@ -15,7 +15,6 @@ namespace mayGL
             m_shaderId = "";
             m_vertexLayout = t_layout;
             m_isVisable = true;
-            m_texture = nullptr;
             
             m_shaderManager = renderer::ShaderManager::instance();
 
@@ -172,25 +171,6 @@ namespace mayGL
             return m_shaderManager->getShader(m_shaderId);
         }
 
-        void Mesh::setTexture(std::string t_textureId)
-        {
-            if (m_texture != nullptr)
-            {
-                removeTexture();
-            }
-
-            m_texture = getParent()->getComponent<Texture, component::texture>(t_textureId);
-            m_texture->addMesh(m_id);
-            CORE_INFO("mesh with id '{}' set texture with id '{}'", m_id, t_textureId);
-        }
-
-        void Mesh::removeTexture() 
-        {
-            m_texture->removeMesh(m_id);
-            m_texture = nullptr;
-            CORE_INFO("mesh with id '{}' removed texture", m_id);
-        }
-
         void Mesh::writeShader(std::string t_filepath, std::string t_source)
         {
             std::ofstream writeFile("shaders/" + t_filepath, std::ios::trunc);
@@ -200,6 +180,56 @@ namespace mayGL
             writeFile.close();
 
             return;
+        }
+
+        void Mesh::addTexture(std::string t_texId)
+        {
+            m_textures.push_back(getParent()->getComponent<Texture, component::texture>(t_texId));
+            CORE_INFO("Mesh with id '{}' added texture with id '{}'", m_id, t_texId);
+        }
+
+        void Mesh::addTextures(std::vector<std::string> t_texIds)
+        {
+            for (auto tex : t_texIds)
+            {
+                addTexture(tex);
+            }
+
+            CORE_INFO("Mesh with id '{}' added {} textures", m_id, t_texIds.size());
+        }
+
+        void Mesh::addAllTextures()
+        {
+            m_textures.clear();
+            m_textures = getParent()->getComponents<Texture, component::texture>();
+
+            CORE_INFO("Mesh with id '{}' added all textures", m_id);
+        }
+
+        void Mesh::removeTexture(std::string t_texId)
+        {
+            int index = 0;
+            bool found = false;
+            for (; index < m_textures.size(); index++)
+            {
+                if (m_textures[index]->getId() == t_texId)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (found)
+            {
+                CORE_INFO("Mesh with id '{}' removed texture with id '{}'", m_id, t_texId);
+                m_textures.erase(m_textures.begin() + index);
+            }
+        }
+
+        void Mesh::removeAllTextures()
+        {
+            CORE_INFO("Mesh with id '{}' removed all bound textures", m_id);
+            m_textures.clear();
         }
 
         void Mesh::imguiComponentInspector()
@@ -350,29 +380,31 @@ namespace mayGL
             if (ImGui::TreeNode(("Bind Textures##" + uidPrefix).c_str()))
             {
                 auto allTextures = getParent()->getComponents<Texture, texture>();
-                int selected = -1;
-                if (m_texture != nullptr)
+                std::vector<char> texSelections;
+                texSelections.resize(allTextures.size());
+                std::fill(texSelections.begin(), texSelections.end(), false);
+                for (int i = 0; i < allTextures.size(); i++)
                 {
-                    for (int i = 0; i < allTextures.size(); i++)
+                    for (auto tex : m_textures)
                     {
-                        if (allTextures[i]->getId() == m_texture->getId())
+                        if (tex->getId() == allTextures[i]->getId())
                         {
-                            selected = i;
+                            texSelections[i] = true;
                         }
                     }
                 }
 
                 for (int i = 0; i < allTextures.size(); i++)
                 {
-                    if (ImGui::Selectable((allTextures[i]->getId() + "##" + uidPrefix).c_str(), selected == i))
+                    if (ImGui::Selectable((allTextures[i]->getId() + "##" + uidPrefix).c_str(), (bool)texSelections[i]))
                     {
-                        if (selected == i)
+                        if ((bool)texSelections[i] == true)
                         {
-                            selected = -1;
-                            removeTexture();
+                            // remove mesh
+                            removeTexture(allTextures[i]->getId());
                         } else {
-                            selected = i;
-                            setTexture(allTextures[i]->getId());
+                            // add mesh
+                            addTexture(allTextures[i]->getId());
                         }
                     }
                 }

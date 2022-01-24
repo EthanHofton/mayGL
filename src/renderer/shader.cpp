@@ -205,9 +205,9 @@ namespace mayGL
             
             addUniform("u_Proj");
             addUniform("u_View");
-            addUniform("u_TexData");
             addUniform("u_CamPos");
             addUniform("u_Time");
+            addUniform("u_Textures");
         }
         
         void Shader::compileShader(std::string t_vertex, std::string t_geometry, std::string t_frag)
@@ -249,9 +249,9 @@ namespace mayGL
             
             addUniform("u_Proj");
             addUniform("u_View");
-            addUniform("u_TexData");
             addUniform("u_CamPos");
             addUniform("u_Time");
+            addUniform("u_Textures");
         }
         
         void Shader::addShader(unsigned int t_program, const char *t_shaderCode, GLenum t_shaderType)

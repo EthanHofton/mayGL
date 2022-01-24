@@ -19,6 +19,8 @@ namespace mayGL
             
             void push(VertexComponent *t_v);
             int getVertexStride() { return m_vertexStride; }
+
+            bool hasComponent(VertexComponentTypes t_type);
             
             void init();
             

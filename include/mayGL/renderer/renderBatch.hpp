@@ -45,7 +45,7 @@ namespace mayGL
             // -- data
             
             // -- texture
-            std::map<std::string, int> m_boundTextures; // filepath : textureUnit
+            std::map<std::string, int> m_boundTextures;
             std::vector<component::Texture *> m_textures;
             // -- texture
         };

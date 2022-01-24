@@ -93,23 +93,52 @@ namespace mayGL
                 }
                 
                 // TODO: textures
-                if (mesh->hasTexture())
+                // TODO: texture overflow
+                // TODO: check number of textures mesh plus texture allreayd bound
+                //       is less then max textures allowd. if so, overflow
+                for (auto tex : mesh->getTextures())
                 {
-                    component::Texture *tex = mesh->getTexture();
-                    
-                    if (currentCall->m_boundTextures.find(tex->getFileName()) == currentCall->m_boundTextures.end())
+                    if (currentCall->m_boundTextures.find(std::to_string(tex->getTextureId())) == currentCall->m_boundTextures.end())
                     {
-                        currentCall->m_boundTextures[tex->getFileName()] = (int)currentCall->m_boundTextures.size();
-                        tex->setTextureUnit(currentCall->m_boundTextures[tex->getFileName()]);
-                        currentCall->m_textures.push_back(tex);
-                    } else {
-                        tex->setTextureUnit(currentCall->m_boundTextures[tex->getFileName()]);
+                        currentCall->m_boundTextures[std::to_string(tex->getTextureId())] = currentCall->m_boundTextures.size();
                     }
-                    tex->updateTextureUnit();
+
+                    currentCall->m_textures.push_back(tex);
                 }
-                
+
                 void *indices = mesh->getIndices();
                 void *vertices = mesh->getWorldVertices();
+
+                // convert mesh texture id to texture unit
+                void* verticesCopy = (void*)malloc(mesh->getVerticesSize());
+                memcpy(verticesCopy, vertices, mesh->getVerticesSize());
+                if (mesh->getLayout()->hasComponent(vertex::texture_id))
+                {
+                    auto vertexLayout = mesh->getLayout();
+                    std::vector<vertex::VertexComponent*> components;
+                    for (auto component : vertexLayout->getComponents())
+                    {
+                        if (component->getType() == vertex::texture_id)
+                        {
+                            components.push_back(component);
+                        }
+                    }
+
+                    for (auto component : components)
+                    {
+                        int positionOffset = component->getVertexOffset();
+                        for (int i = 0; i < (mesh->getVerticesSize() / vertexLayout->getVertexStride()); i++)
+                        {
+                            float id;
+                            float *data = (float*)((char *)verticesCopy + (positionOffset) + (i*vertexLayout->getVertexStride()));
+                            id = *data;
+
+                            id = (int)(currentCall->m_boundTextures[std::to_string((int)id)]);
+                            *data = id;
+                        }
+                    }
+                }
+                // convert mesh texture id to texture unit
                 
                 // update indices
                 unsigned int* indicesCopy = (unsigned int*)malloc(mesh->getIndicesSize());
@@ -119,11 +148,13 @@ namespace mayGL
                 {
                     indicesCopy[i] += currentCall->m_indexValueOffset;
                 }
+                // update indices
 
-                memcpy((char *)currentCall->m_vertexArray + currentCall->m_vertexDataOffset, vertices, mesh->getVerticesSize());
+                memcpy((char *)currentCall->m_vertexArray + currentCall->m_vertexDataOffset, verticesCopy, mesh->getVerticesSize());
                 memcpy((char *)currentCall->m_indexArray + currentCall->m_indexDataOffset, indicesCopy, mesh->getIndicesSize());
                 
                 free(indicesCopy);
+                free(verticesCopy);
 
                 currentCall->m_objects++;
                 currentCall->m_indexValueOffset += indexOffset;
@@ -184,7 +215,6 @@ namespace mayGL
             t_call.m_vertexDataOffset = 0;
             t_call.m_full = false;
             t_call.m_objects = 0;
-            t_call.m_boundTextures.clear();
             t_call.m_textures.clear();
         }
         
@@ -215,18 +245,22 @@ namespace mayGL
                 auto shader = m_shaderManager->getShader(call.m_shaderId);
                 shader->useShader();
                 
-                // -- bind textures
+                // -- bind all textures
                 int samplers[16];
                 for (int i = 0; i < 16; i++)
                 {
                     samplers[i] = i;
                 }
-                glUniform1iv(shader->getUniformLocation("u_TexData"), 16, samplers);
-                // -- bind textures
-                
+                glUniform1iv(shader->getUniformLocation("u_Textures"), 16, samplers);
+
+                // bind texture uniforms
                 for (auto tex : call.m_textures)
                 {
-                    tex->use();
+                    shader->addUniform(tex->getUniformId());
+                    int id = call.m_boundTextures[std::to_string(tex->getTextureId())];
+                    glUniform1i(shader->getUniformLocation(tex->getUniformId()), id);
+
+                    tex->use(id);
                 }
                 
                 if (m_batchWireframe)

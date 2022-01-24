@@ -14,7 +14,6 @@ namespace mayGL
             glm::vec3 m_pos;
             glm::vec4 m_color;
             glm::vec2 m_texCoord;
-            float m_texUnit;
         };
         
         class Rectangle : public entity::Entity

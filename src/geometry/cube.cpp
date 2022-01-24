@@ -71,7 +71,6 @@ namespace mayGL
             vLayout->push(new vertex::VertexComponent("pos", vertex::position, 3, GL_FLOAT, GL_FALSE, offsetof(cube_vertex, m_pos)));
             vLayout->push(new vertex::VertexComponent("color", vertex::color, 4, GL_FLOAT, GL_FALSE, offsetof(cube_vertex, m_color)));
             vLayout->push(new vertex::VertexComponent("tex_coord", vertex::texture_coords, 2, GL_FLOAT, GL_FALSE, offsetof(cube_vertex, m_texCoords)));
-            vLayout->push(new vertex::VertexComponent("tex_unit", vertex::texture_unit, 1, GL_FLOAT, GL_FALSE, offsetof(cube_vertex, m_unit)));
             
             addComponent(new component::Mesh(this, m_cubeMeshId, vLayout, GL_TRIANGLES));
             addComponent(new component::Transform(this, m_cubeMeshTransformId));

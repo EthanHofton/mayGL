@@ -13,7 +13,7 @@ namespace mayGL
             position,
             color,
             texture_coords,
-            texture_unit,
+            texture_id,
             normals,
             custom
         };
