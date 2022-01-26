@@ -5,25 +5,18 @@ namespace mayGL
 {
     namespace component
     {
-        Material::Material(entity::Entity *t_parent, std::string t_id, std::string t_materialName) : Component(t_parent, material, t_id)
+        Material::Material(entity::Entity *t_parent, std::string t_id) : Component(t_parent, material, t_id)
         {
-            m_ambient = glm::vec3(1, 0, 0);
-            m_diffuse = glm::vec3(1, 0, 0);
-            m_specular = glm::vec3(1, 0, 0);
-            m_shininess = 32.0f;
+            m_Ka = glm::vec3(1, 0, 0);
+            m_Kd = glm::vec3(1, 0, 0);
+            m_Ks = glm::vec3(1, 0, 0);
+            m_Ns = 32.0f;
 
-            m_materialName = t_materialName;
-        }
+            m_mapKd = 0;
+            m_mapKs = 0;
+            m_bump = 0;
 
-        void Material::setShaderUniforms()
-        {
-            for (auto mesh : m_meshes)
-            {
-                mesh->getShader()->addUniform(m_materialName + ".ambient");
-                mesh->getShader()->addUniform(m_materialName + ".diffuse");
-                mesh->getShader()->addUniform(m_materialName + ".specular");
-                mesh->getShader()->addUniform(m_materialName + ".shininess");
-            }
+            m_dragEdit = true;
         }
 
         void Material::addMesh(std::string t_meshId)
@@ -76,23 +69,153 @@ namespace mayGL
             m_meshes.clear();
         }
 
+        void Material::setValue(component::Mesh *mesh, vertex::VertexComponentTypes t_type, float *t_data)
+        {
+            if (mesh->getLayout()->hasComponent(t_type))
+            {
+                auto vertexLayout = mesh->getLayout();
+                auto worldVertices = mesh->getWorldVertices();
+                std::vector<vertex::VertexComponent*> components;
+                for (auto component : vertexLayout->getComponents())
+                {
+                    if (component->getType() == t_type)
+                    {
+                        components.push_back(component);
+                    }
+                }
+
+                for (auto component : components)
+                {
+                    int step = component->getVertexComponentStride();
+                    int positionOffset = component->getVertexOffset();
+                    int count = component->getCount();
+                    for (int i = 0; i < (mesh->getVerticesSize() / vertexLayout->getVertexStride()); i++)
+                    {
+                        for (int x = 0; x < count; x++)
+                        {
+                            float *data = (float*)((char *)worldVertices + (positionOffset) + (i*vertexLayout->getVertexStride()) + (x*step));
+                            *data = t_data[x];
+                        }
+                    }
+                }
+            }
+        }
+
         void Material::update()
         {
-            setShaderUniforms();
-
+            // update Ka, Kd, Ks, Ns, map_Kd, map_Ks, bump
             for (auto mesh : m_meshes)
             {
-                mesh->getShader()->setUniform3f(m_materialName + ".ambient", m_ambient);
-                mesh->getShader()->setUniform3f(m_materialName + ".diffuse", m_diffuse);
-                mesh->getShader()->setUniform3f(m_materialName + ".specular", m_specular);
-                mesh->getShader()->setUniform1f(m_materialName + ".shininess", m_shininess);
+                // TODO: dirty flags to stop update every frame
+                setValue(mesh, vertex::Ka, &m_Ka[0]);
+                setValue(mesh, vertex::Kd, &m_Kd[0]);
+                setValue(mesh, vertex::Ks, &m_Ks[0]);
+                setValue(mesh, vertex::Ns, &m_Ns);
+                
+                setValue(mesh, vertex::map_Kd, &m_mapKd);
+                setValue(mesh, vertex::map_Ks, &m_mapKs);
+                setValue(mesh, vertex::bump, &m_bump);
             }
         }
 
         void Material::imguiComponentInspector()
         {
+            // suffix
+            std::string uidSuffix = "matieral" + m_id + getParent()->getEntityId();
+
             // Component Info
             Component::imguiComponentInspector();
+
+            // darg edit
+            ImGui::Checkbox(("Drag edit##dragEdit" + uidSuffix).c_str(), &m_dragEdit);
+
+            // Show mat properties
+            // ambient
+            ImGui::Text("m_Ka (ambient)");
+            if (m_dragEdit)
+            {
+                ImGui::DragFloat3(("rgb##ambient" + uidSuffix).c_str(), &m_Ka[0], 0.01f);
+            } else {
+                ImGui::InputFloat3(("rgb##ambient" + uidSuffix).c_str(), &m_Ka[0]);
+            }
+            
+            // diffuse
+            ImGui::Text("m_Kd (diffuse)");
+            if (m_dragEdit)
+            {
+                ImGui::DragFloat3(("rgb##diffuse" + uidSuffix).c_str(), &m_Kd[0], 0.01f);
+            } else {
+                ImGui::InputFloat3(("rgb##diffuse" + uidSuffix).c_str(), &m_Kd[0]);
+            }
+
+            // specular
+            ImGui::Text("m_Ks (specular)");
+            if (m_dragEdit)
+            {
+                ImGui::DragFloat3(("rgb##specular" + uidSuffix).c_str(), &m_Ks[0], 0.01f);
+            } else {
+                ImGui::InputFloat3(("rgb##specular" + uidSuffix).c_str(), &m_Ks[0]);
+            }
+            
+            // sininess
+            ImGui::Text("m_Ns (shininess)");
+            if (m_dragEdit)
+            {
+                ImGui::DragFloat(("Ns##shininess" + uidSuffix).c_str(), &m_Ns, 0.1f);
+            } else {
+                ImGui::InputFloat(("Ns##shininess" + uidSuffix).c_str(), &m_Ns);
+            }
+            //
+
+            // map_Kd
+            ImGui::Text("m_mapKd (diffuse map)");
+            ImGui::InputFloat(("Ns##diffuseMap" + uidSuffix).c_str(), &m_mapKd, 1);
+
+            // map_Ks
+            ImGui::Text("m_mapKs (specular map)");
+            ImGui::InputFloat(("Ns##specualrMap" + uidSuffix).c_str(), &m_mapKs, 1);
+
+            // bump
+            ImGui::Text("m_bump (normal map)");
+            ImGui::InputFloat(("Ns##normalMap" + uidSuffix).c_str(), &m_bump, 1);
+
+            ImGui::Separator();
+
+            // add bound meshes
+            auto allMeshes = getParent()->getComponents<Mesh, mesh>();
+            std::vector<char> meshSelections;
+            meshSelections.resize(allMeshes.size());
+            std::fill(meshSelections.begin(), meshSelections.end(), false);
+            for (int i = 0; i < allMeshes.size(); i++)
+            {
+                for (auto mesh : m_meshes)
+                {
+                    if (mesh->getId() == allMeshes[i]->getId())
+                    {
+                        meshSelections[i] = true;
+                    }
+                }
+            }
+            if (ImGui::TreeNode("Bind Meshes"))
+            {
+                for (int i = 0; i < allMeshes.size(); i++)
+                {
+                    if (ImGui::Selectable(allMeshes[i]->getId().c_str(), (bool)meshSelections[i]))
+                    {
+                        if ((bool)meshSelections[i] == true)
+                        {
+                            // remove mesh
+                            removeMesh(allMeshes[i]->getId());
+                        } else {
+                            // add mesh
+                            addMesh(allMeshes[i]->getId());
+                        }
+                    }
+                }
+
+                ImGui::TreePop();
+            }
+
         }
     }
 }

@@ -26,6 +26,7 @@ dirs:
 libs:
 	cd lib/glew/auto && make && cd .. && make && make install
 	cd lib/SDL2 && mkdir -p build && cd build && cmake .. && make
+	cd lib/assimp && cmake CMakeLists.txt && cmake --build .
 
 	mkdir -p include/GL/
 	cp -a lib/glew/include/GL/. include/GL/

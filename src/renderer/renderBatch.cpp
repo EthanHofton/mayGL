@@ -112,13 +112,13 @@ namespace mayGL
                 // convert mesh texture id to texture unit
                 void* verticesCopy = (void*)malloc(mesh->getVerticesSize());
                 memcpy(verticesCopy, vertices, mesh->getVerticesSize());
-                if (mesh->getLayout()->hasComponent(vertex::texture_id))
+                if (mesh->getLayout()->hasComponent(vertex::texture_id) || mesh->getLayout()->hasComponent(vertex::map_Kd) || mesh->getLayout()->hasComponent(vertex::map_Ks) || mesh->getLayout()->hasComponent(vertex::bump))
                 {
                     auto vertexLayout = mesh->getLayout();
                     std::vector<vertex::VertexComponent*> components;
                     for (auto component : vertexLayout->getComponents())
                     {
-                        if (component->getType() == vertex::texture_id)
+                        if (component->getType() == vertex::texture_id || component->getType() == vertex::map_Kd || component->getType() == vertex::map_Ks || component->getType() == vertex::bump)
                         {
                             components.push_back(component);
                         }
@@ -216,6 +216,7 @@ namespace mayGL
             t_call.m_full = false;
             t_call.m_objects = 0;
             t_call.m_textures.clear();
+            t_call.m_boundTextures.clear();
         }
         
         void RenderBatch::batchEnd()

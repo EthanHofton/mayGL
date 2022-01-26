@@ -3,10 +3,7 @@
 
 #include <mayGL/entity/entity.hpp>
 #include <mayGL/component/materialComponent.hpp>
-
-#include <unordered_map>
-#include <glm/gtx/hash.hpp>
-#include <tinyobjloader/tiny_obj_loader.h>
+#include <mayGL/component/textureComponent.hpp>
 
 namespace mayGL
 {
@@ -18,11 +15,6 @@ namespace mayGL
         {
             glm::vec3 m_pos;
             glm::vec3 m_normal;
-
-            bool operator==(const modelVertex& other) const
-            {
-                return m_pos == other.m_pos && m_normal == other.m_normal;
-            }
         };
 
         class Model : public entity::Entity
@@ -45,7 +37,7 @@ namespace mayGL
 
         private:
 
-            component::Mesh *m_modelMesh;
+            std::vector<component::Mesh*> m_meshes;
             component::Transform *m_modelTransform;
 
             std::string m_meshID;

@@ -15,6 +15,13 @@ namespace mayGL
             texture_coords,
             texture_id,
             normals,
+            Ka,
+            Kd,
+            Ks,
+            Ns,
+            map_Kd,
+            map_Ks,
+            bump,
             custom
         };
         
