@@ -5,6 +5,11 @@
 #include <mayGL/component/materialComponent.hpp>
 #include <mayGL/component/textureComponent.hpp>
 
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/material.h>
+
 namespace mayGL
 {
     namespace geometry
@@ -15,6 +20,13 @@ namespace mayGL
         {
             glm::vec3 m_pos;
             glm::vec3 m_normal;
+            glm::vec2 m_texCoords;
+            glm::vec3 m_Ka = glm::vec3(1);
+            glm::vec3 m_Kd = glm::vec3(1);
+            glm::vec3 m_Ks = glm::vec3(1);
+            float m_Ns = 32;
+            float m_mapKd = 0;
+            float m_mapKs = 0;
         };
 
         class Model : public entity::Entity
@@ -22,18 +34,17 @@ namespace mayGL
         public:
 
             Model(std::string t_modelFilepath);
-            ~Model();
+            ~Model() = default;
 
             inline void update() override {}
 
-            inline component::Mesh* getModelMesh() { return m_modelMesh; }
+            inline std::vector<component::Mesh*> getModelMeshes() { return m_meshes; }
             inline component::Transform *getModelTransform() { return m_modelTransform; }
-            inline std::string getModelTransformId() { return m_transformID; }
-            inline std::string getModelMeshId() { return m_meshID; }
 
         private:
 
-            void loadOBJ(std::string t_path, component::Mesh *t_mesh);
+            void loadFromFile(std::string t_path);
+            component::Texture* loadTexture(aiMaterial *t_mat, aiTextureType t_type, std::string t_matName);
 
         private:
 
@@ -42,22 +53,11 @@ namespace mayGL
 
             std::string m_meshID;
             std::string m_transformID;
+            std::string m_directory;
 
             std::string m_modelOBJFile;
         };
     }
-}
-
-namespace std
-{
-    template <>
-    struct hash<mayGL::geometry::modelVertex>
-    {
-        size_t operator()(const mayGL::geometry::modelVertex& vertex) const
-        {
-            return ((hash<glm::vec3>()(vertex.m_pos) ^ (hash<glm::vec3>()(vertex.m_normal) << 1)) >> 1);
-        }
-    };
 }
 
 #endif
