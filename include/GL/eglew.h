@@ -2412,7 +2412,7 @@ typedef EGLBoolean ( * PFNEGLPOSTSUBBUFFERNVPROC) (EGLDisplay dpy, EGLSurface su
 
 typedef EGLint ( * PFNEGLQUERYSTREAMCONSUMEREVENTNVPROC) (EGLDisplay dpy, EGLStreamKHR stream, EGLTime timeout, EGLenum* event, EGLAttrib* aux);
 typedef EGLBoolean ( * PFNEGLSTREAMACQUIREIMAGENVPROC) (EGLDisplay dpy, EGLStreamKHR stream, EGLImage* pImage, EGLSync sync);
-typedef EGLBoolean ( * PFNEGLSTREAMIMAGECONSUMERCONNECTNVPROC) (EGLDisplay dpy, EGLStreamKHR stream, EGLint num_modifiers, EGLuint64KHR* modifiers, EGLAttrib* attrib_list);
+typedef EGLBoolean ( * PFNEGLSTREAMIMAGECONSUMERCONNECTNVPROC) (EGLDisplay dpy, EGLStreamKHR stream, EGLint num_modifiers, const EGLuint64KHR* modifiers, const EGLAttrib* attrib_list);
 typedef EGLBoolean ( * PFNEGLSTREAMRELEASEIMAGENVPROC) (EGLDisplay dpy, EGLStreamKHR stream, EGLImage image, EGLSync sync);
 
 #define eglQueryStreamConsumerEventNV EGLEW_GET_FUN(__eglewQueryStreamConsumerEventNV)

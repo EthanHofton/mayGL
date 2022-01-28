@@ -1,15 +1,7 @@
-UNAME_S = $(shell uname -s)
-
 CC = c++
 
 CXXFLAGS = -Werror -Wall -std=c++17 -Wc++11-extensions -Wvexing-parse -stdlib=libc++
 CXXFLAGS += -Iinclude/
-LDFLAGS = lib/glew/lib/libGLEW.a lib/assimp/lib/libassimp.a `sdl2-config --static-libs`
-
-ifeq ($(UNAME_S), Darwin)
-	LDFLAGS += -framework OpenGL -framework IOKit -framework CoreVideo -framework Cocoa -framework CoreAudio
-endif
-
 SRC = $(wildcard src/**/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 BIN = lib
@@ -26,7 +18,7 @@ dirs:
 libs:
 	cd lib/glew/auto && make && cd .. && make && make install
 	cd lib/SDL2 && mkdir -p build && cd build && cmake .. && make
-	cd lib/assimp && cmake CMakeLists.txt -DBUILD_FRAMEWORK=ON && cmake --build . 
+	cd lib/assimp && cmake CMakeLists.txt && cmake --build . 
 
 	mkdir -p include/GL/
 	cp -a lib/glew/include/GL/. include/GL/
