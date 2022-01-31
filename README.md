@@ -25,9 +25,10 @@ To use the libary in your project, include the static libary and also the depend
 -Llib/mayGL/lib/glew/ -lGLEW
 -framework OpenGL
 -rpath lib/mayGL/lib/SDL2/build/ lib/mayGL/lib/SDL2/build/libSDL2-2.0.dylib
+-rpath lib/mayGL/lib/assimp/bin/ lib/mayGL/lib/assimp/bin/libassimp.5.2.0.dylib
 ```
 
-Note: using SDL dylib on OSX creates issues due to @rpath, in order to fix this use `-rpath lib/mayGL/lib/SDL2/build/` flag in order to add the libary search path to the rpath search paths.
+Note: using SDL dylib on OSX creates issues due to @rpath, in order to fix this use `-rpath lib/mayGL/lib/SDL2/build/` flag in order to add the libary search path to the rpath search paths. Same applies for assimp dylib
 
 When building your application, link against all the libaries listed above aswell as adding `-Ilib/mayGL/include` to the header search paths
 
