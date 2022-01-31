@@ -91,8 +91,8 @@ namespace mayGL
                 vLayout->push(new vertex::VertexComponent("Kd", vertex::Kd, 3, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_Kd)));
                 vLayout->push(new vertex::VertexComponent("Ks", vertex::Ks, 3, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_Ks)));
                 vLayout->push(new vertex::VertexComponent("Ns", vertex::Ns, 1, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_Ns)));
-                vLayout->push(new vertex::VertexComponent("map_Kd", vertex::map_Kd, 1, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_mapKd)));
-                vLayout->push(new vertex::VertexComponent("map_Ks", vertex::map_Ks, 1, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_mapKs)));
+                vLayout->push(new vertex::VertexComponent("map_Kd", vertex::Ns, 1, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_mapKd)));
+                vLayout->push(new vertex::VertexComponent("map_Ks", vertex::Ns, 1, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_mapKs)));
                 
                 component::Mesh *matMesh = new component::Mesh(this, getEntityId() + "modelMesh:" + std::to_string(meshIdx), vLayout, GL_TRIANGLES);
                 matMesh->setVertices(&vertes[0], sizeof(modelVertex) * vertes.size());

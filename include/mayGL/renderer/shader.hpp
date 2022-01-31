@@ -21,6 +21,8 @@ namespace mayGL
             
             Shader();
             ~Shader();
+
+            unsigned int getShaderId();
             
             void createFromString(std::string t_vertex, std::string t_frag);
             void createFromString(std::string t_vertex, std::string t_geom, std::string t_frag);

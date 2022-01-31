@@ -1,4 +1,5 @@
 #include <mayGL/renderer/renderBatch.hpp>
+#include <mayGL/renderer/renderer.hpp>
 
 namespace mayGL
 {
@@ -10,6 +11,7 @@ namespace mayGL
 
             m_cullFace = false;
             m_batchWireframe = false;
+
         }
         
         RenderBatch::~RenderBatch()
@@ -101,6 +103,7 @@ namespace mayGL
                     if (currentCall->m_boundTextures.find(std::to_string(tex->getTextureId())) == currentCall->m_boundTextures.end())
                     {
                         currentCall->m_boundTextures[std::to_string(tex->getTextureId())] = currentCall->m_boundTextures.size();
+                        // currentCall->m_texturesUbo.m_textureMaps[tex->getTextureId()].x = currentCall->m_boundTextures[std::to_string(tex->getTextureId())];
                     }
 
                     currentCall->m_textures.push_back(tex);
@@ -108,37 +111,6 @@ namespace mayGL
 
                 void *indices = mesh->getIndices();
                 void *vertices = mesh->getWorldVertices();
-
-                // convert mesh texture id to texture unit
-                void* verticesCopy = (void*)malloc(mesh->getVerticesSize());
-                memcpy(verticesCopy, vertices, mesh->getVerticesSize());
-                if (mesh->getLayout()->hasComponent(vertex::texture_id) || mesh->getLayout()->hasComponent(vertex::map_Kd) || mesh->getLayout()->hasComponent(vertex::map_Ks) || mesh->getLayout()->hasComponent(vertex::bump))
-                {
-                    auto vertexLayout = mesh->getLayout();
-                    std::vector<vertex::VertexComponent*> components;
-                    for (auto component : vertexLayout->getComponents())
-                    {
-                        if (component->getType() == vertex::texture_id || component->getType() == vertex::map_Kd || component->getType() == vertex::map_Ks || component->getType() == vertex::bump)
-                        {
-                            components.push_back(component);
-                        }
-                    }
-
-                    for (auto component : components)
-                    {
-                        int positionOffset = component->getVertexOffset();
-                        for (int i = 0; i < (mesh->getVerticesSize() / vertexLayout->getVertexStride()); i++)
-                        {
-                            float id;
-                            float *data = (float*)((char *)verticesCopy + (positionOffset) + (i*vertexLayout->getVertexStride()));
-                            id = *data;
-
-                            id = (int)(currentCall->m_boundTextures[std::to_string((int)id)]);
-                            *data = id;
-                        }
-                    }
-                }
-                // convert mesh texture id to texture unit
                 
                 // update indices
                 unsigned int* indicesCopy = (unsigned int*)malloc(mesh->getIndicesSize());
@@ -150,11 +122,10 @@ namespace mayGL
                 }
                 // update indices
 
-                memcpy((char *)currentCall->m_vertexArray + currentCall->m_vertexDataOffset, verticesCopy, mesh->getVerticesSize());
+                memcpy((char *)currentCall->m_vertexArray + currentCall->m_vertexDataOffset, vertices, mesh->getVerticesSize());
                 memcpy((char *)currentCall->m_indexArray + currentCall->m_indexDataOffset, indicesCopy, mesh->getIndicesSize());
                 
                 free(indicesCopy);
-                free(verticesCopy);
 
                 currentCall->m_objects++;
                 currentCall->m_indexValueOffset += indexOffset;
@@ -193,6 +164,13 @@ namespace mayGL
             
             t_call.m_vertexArray = calloc(maxNumVertices, t_call.m_vertexLayout->getVertexStride());
             t_call.m_indexArray = calloc(maxNumIndices, sizeof(unsigned int));
+
+            // init texture map to 0
+            // t_call.m_texturesUbo = uboTextures();
+            // for (int i = 0; i < 64; i++)
+            // {
+            //     // t_call.m_texturesUbo.m_textureMaps[i] = glm::vec4(0);
+            // }
         }
         
         void RenderBatch::batchBegin()
@@ -217,6 +195,12 @@ namespace mayGL
             t_call.m_objects = 0;
             t_call.m_textures.clear();
             t_call.m_boundTextures.clear();
+
+            // init texture map to 0
+            // for (int i = 0; i < 64; i++)
+            // {
+            //     // t_call.m_texturesUbo.m_textureMaps[i] = glm::vec4(0);
+            // }
         }
         
         void RenderBatch::batchEnd()
@@ -239,30 +223,32 @@ namespace mayGL
             glBufferSubData(GL_ARRAY_BUFFER, 0, t_call.m_vertexDataOffset, t_call.m_vertexArray);
         }
 
-        void RenderBatch::draw(glm::mat4 &t_view, glm::mat4 &t_projection, glm::vec3 t_camPos, float t_time)
+        void RenderBatch::draw()
         {
             for (auto &call : m_drawCalls)
             {
                 auto shader = m_shaderManager->getShader(call.m_shaderId);
                 shader->useShader();
-                
-                // -- bind all textures
-                int samplers[16];
-                for (int i = 0; i < 16; i++)
-                {
-                    samplers[i] = i;
-                }
-                glUniform1iv(shader->getUniformLocation("u_Textures"), 16, samplers);
 
                 // bind texture uniforms
                 for (auto tex : call.m_textures)
                 {
-                    shader->addUniform(tex->getUniformId());
                     int id = call.m_boundTextures[std::to_string(tex->getTextureId())];
-                    glUniform1i(shader->getUniformLocation(tex->getUniformId()), id);
-
                     tex->use(id);
                 }
+                int samplers[16];
+                for (int i = 0; i < 16; i++)
+                {
+                    if (i < call.m_boundTextures.size())
+                    {
+                        samplers[i] = i;
+                    } else {
+                        samplers[i] = 0;
+                    }
+                }
+                glUniform1iv(shader->getUniformLocation("u_Textures"), 16, samplers);
+
+                // set texture uniform data
                 
                 if (m_batchWireframe)
                 {
@@ -274,10 +260,11 @@ namespace mayGL
                     glEnable(GL_CULL_FACE);
                 }
                 
-                glUniformMatrix4fv(shader->getUniformLocation("u_Proj"), 1, GL_FALSE, &t_projection[0][0]);
-                glUniformMatrix4fv(shader->getUniformLocation("u_View"), 1, GL_FALSE, &t_view[0][0]);
-                glUniform3f(shader->getUniformLocation("u_CamPos"), t_camPos.x, t_camPos.y, t_camPos.z);
-                glUniform1f(shader->getUniformLocation("u_Time"), t_time);
+                unsigned int matBlockIndex = glGetUniformBlockIndex(shader->getShaderId(), "Matrices");
+                glUniformBlockBinding(shader->getShaderId(), matBlockIndex, 0);
+
+                unsigned int texBlockIndex = glGetUniformBlockIndex(shader->getShaderId(), "TextureMaps");
+                glUniformBlockBinding(shader->getShaderId(), texBlockIndex, 1);
                 
                 glBindVertexArray(call.m_VAO);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, call.m_IBO);

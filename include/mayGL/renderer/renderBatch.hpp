@@ -21,6 +21,11 @@ namespace mayGL
 {
     namespace renderer
     {
+        struct uboTextures
+        {
+            glm::vec4 m_textureMaps[32];
+        }; // 512 bytes
+
         struct DrawCall
         {
             // -- VBO, VAO, IBO
@@ -47,6 +52,7 @@ namespace mayGL
             // -- texture
             std::map<std::string, int> m_boundTextures;
             std::vector<component::Texture *> m_textures;
+            // uboTextures m_texturesUbo;
             // -- texture
         };
         
@@ -61,7 +67,7 @@ namespace mayGL
             
             void batchBegin();
             void batchEnd();
-            void draw(glm::mat4 &t_view, glm::mat4 &t_projection, glm::vec3 t_camPos, float t_time);
+            void draw();
 
             // face culling for batch
             inline void enableFaceCulling() { m_cullFace = true; }

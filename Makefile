@@ -1,6 +1,6 @@
 CC = c++
 
-CXXFLAGS = -Werror -Wall -std=c++17 -Wc++11-extensions -Wvexing-parse -stdlib=libc++
+CXXFLAGS = -Wall -std=c++17 -Wc++11-extensions -Wvexing-parse -stdlib=libc++
 CXXFLAGS += -Iinclude/
 SRC = $(wildcard src/**/*.cpp)
 OBJ = $(SRC:.cpp=.o)
@@ -30,4 +30,4 @@ program: $(OBJ)
 	$(CC) -c $< -o $@ $(CXXFLAGS)
 
 clean:
-	rm -rf $(BIN)/static $(OBJ)
+	sudo rm -rf $(BIN)/static $(OBJ)

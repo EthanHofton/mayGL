@@ -271,13 +271,14 @@ namespace mayGL
 
                 // vertice count
                 int verticeCount = m_verticesSize / m_vertexLayout->getVertexStride();
+                int indiceCount = (int)(m_indeicesSize / sizeof(unsigned int));
                 ImGui::LabelText("vertice count", "%i vertices", verticeCount);
 
                 // indice count
-                ImGui::LabelText("indice count", "%i indices", (int)(m_indeicesSize / sizeof(unsigned int)));
+                ImGui::LabelText("indice count", "%i indices", indiceCount);
 
                 // triangle count
-                ImGui::LabelText("triangle count", "%i triangles", (int)(verticeCount / 3));
+                ImGui::LabelText("triangle count", "%i triangles", (int)(indiceCount / 3));
 
                 // primative type
                 std::string primativeType;

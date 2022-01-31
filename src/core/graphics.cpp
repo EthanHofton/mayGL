@@ -112,6 +112,8 @@ namespace mayGL
                 CORE_CRITICAL("GLEW ERROR: failed to initalsie flew");
                 return;
             }
+
+            SDL_GL_SetSwapInterval(0);
             
             // set up additional OpenGL params
             glEnable(GL_DEPTH_TEST);

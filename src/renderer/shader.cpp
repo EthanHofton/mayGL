@@ -20,6 +20,11 @@ namespace mayGL
         {
             clearShader();
         }
+
+        unsigned int Shader::getShaderId()
+        {
+            return m_shaderId;
+        }
         
         void Shader::createFromString(std::string t_vertex, std::string t_frag)
         {
@@ -202,11 +207,7 @@ namespace mayGL
             }
             
             CORE_INFO("shader with id '{0}' created succsefully", m_shaderId);
-            
-            addUniform("u_Proj");
-            addUniform("u_View");
-            addUniform("u_CamPos");
-            addUniform("u_Time");
+
             addUniform("u_Textures");
         }
         
@@ -247,10 +248,6 @@ namespace mayGL
             
             CORE_INFO("shader with id '{0}' created succsefully", m_shaderId);
             
-            addUniform("u_Proj");
-            addUniform("u_View");
-            addUniform("u_CamPos");
-            addUniform("u_Time");
             addUniform("u_Textures");
         }
         
