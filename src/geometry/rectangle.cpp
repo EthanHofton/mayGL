@@ -27,12 +27,11 @@ namespace mayGL
             vLayout->push(new vertex::VertexComponent("color", vertex::color, 4, GL_FLOAT, GL_FALSE, offsetof(rectangle_vertex, m_color)));
             vLayout->push(new vertex::VertexComponent("tex_coord", vertex::texture_coords, 2, GL_FLOAT, GL_FALSE, offsetof(rectangle_vertex, m_texCoord)));
             
-            addComponent(new component::Mesh(this, m_meshId, vLayout, GL_TRIANGLES));
+            addComponent(new component::Mesh(this, m_meshId, vLayout));
             addComponent(new component::Transform(this, m_meshTransformId));
             
             getRectMesh()->setVertices((void*)&m_vertexData[0], (int)(sizeof(rectangle_vertex)*m_vertexData.size()));
             getRectMesh()->setIndices((void*)&m_indexData[0], sizeof(m_indexData));
-            getRectMesh()->loadShader("rectangle.vertex", "rectangle.fragment");
             getRectMeshTransform()->addMesh(m_meshId);
         }
 

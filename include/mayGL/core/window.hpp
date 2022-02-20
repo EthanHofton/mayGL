@@ -9,7 +9,6 @@
 #include "timer.hpp"
 #include "inputManager.hpp"
 #include "../entity/entity.hpp"
-#include "../renderer/renderer.hpp"
 
 namespace mayGL
 {
@@ -44,7 +43,7 @@ namespace mayGL
             
             float m_frameRate;
             InputManager *m_inputManager;
-            renderer::Renderer *m_renderer;
+            unsigned int m_vao;
             
             bool m_isRunning;
         };

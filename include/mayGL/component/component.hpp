@@ -27,6 +27,7 @@ namespace mayGL
             physicsBody,
             collider,
             material,
+            renderer,
             custom
         };
         

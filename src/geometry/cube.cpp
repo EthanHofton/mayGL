@@ -72,12 +72,11 @@ namespace mayGL
             vLayout->push(new vertex::VertexComponent("color", vertex::color, 4, GL_FLOAT, GL_FALSE, offsetof(cube_vertex, m_color)));
             vLayout->push(new vertex::VertexComponent("tex_coord", vertex::texture_coords, 2, GL_FLOAT, GL_FALSE, offsetof(cube_vertex, m_texCoords)));
             
-            addComponent(new component::Mesh(this, m_cubeMeshId, vLayout, GL_TRIANGLES));
+            addComponent(new component::Mesh(this, m_cubeMeshId, vLayout));
             addComponent(new component::Transform(this, m_cubeMeshTransformId));
             
             getCubeMesh()->setVertices((void*)&m_vertexData[0], (int)(sizeof(cube_vertex)*m_vertexData.size()));
             getCubeMesh()->setIndices((void*)&m_indexData[0], 6*6*sizeof(unsigned int));
-            getCubeMesh()->loadShader("geomerty/cube/texturedCube.vertex", "geomerty/cube/cube.fragment");
             getCubeMeshTransform()->addMesh(m_cubeMeshId);
         }
 

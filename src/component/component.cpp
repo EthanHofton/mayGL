@@ -34,6 +34,9 @@ namespace mayGL
             case material:
                 type = "material";
                 break;
+            case renderer:
+                type = "renderer";
+                break;
             case custom:
                 type = "custom";
                 break;

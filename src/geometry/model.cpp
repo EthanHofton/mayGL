@@ -94,10 +94,9 @@ namespace mayGL
                 vLayout->push(new vertex::VertexComponent("map_Kd", vertex::Ns, 1, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_mapKd)));
                 vLayout->push(new vertex::VertexComponent("map_Ks", vertex::Ns, 1, GL_FLOAT, GL_FALSE, offsetof(modelVertex, m_mapKs)));
                 
-                component::Mesh *matMesh = new component::Mesh(this, getEntityId() + "modelMesh:" + std::to_string(meshIdx), vLayout, GL_TRIANGLES);
+                component::Mesh *matMesh = new component::Mesh(this, getEntityId() + "modelMesh:" + std::to_string(meshIdx), vLayout);
                 matMesh->setVertices(&vertes[0], sizeof(modelVertex) * vertes.size());
                 matMesh->setIndices(&indices[0], sizeof(unsigned int) * indices.size());
-                matMesh->loadShader("light.vertex", "light.fragment");
                 addComponent(matMesh);
 
                 if (!hasComponent(stringMatName))

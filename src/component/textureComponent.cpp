@@ -6,6 +6,23 @@ namespace mayGL
     namespace component
     {
         std::map<std::string, std::pair<int, int>> Texture::s_textureMap;
+
+        Texture::Texture(entity::Entity *t_parent, std::string t_id, glm::vec2 t_size) : Component(t_parent, texture, t_id)
+        {
+            m_filename = "";
+            m_size = t_size;
+            m_bitDepth = 0;
+            m_previewImageArea = 4096;
+            glGenTextures(1, &m_textureId);
+            glBindTexture(GL_TEXTURE_2D, m_textureId);
+            
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA, GL_FLOAT, (void*)nullptr);
+        }
         
         Texture::Texture(entity::Entity *t_parent, std::string t_id, std::string t_filename, std::string t_uniformId) : Component(t_parent, texture, t_id)
         {
@@ -54,9 +71,15 @@ namespace mayGL
         
         Texture::~Texture()
         {
-            if (s_textureMap[m_filename].second != 1)
+            if (m_filename == "") 
+            {
+                glDeleteTextures(1, &m_textureId);
+            }
+
+            if (s_textureMap[m_filename].second != 1) 
+            {
                 s_textureMap[m_filename].second--;
-            else {
+            } else {
                 s_textureMap.erase(s_textureMap.find(m_filename));
                 glDeleteTextures(1, &m_textureId);
             }

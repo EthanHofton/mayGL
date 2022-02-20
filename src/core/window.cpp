@@ -20,9 +20,9 @@ namespace mayGL
             
             m_frameRate = (float)(GAME_CONFIG()["fps"].GetInt());
             m_inputManager = InputManager::instance();
-            
-            m_renderer = renderer::Renderer::instance();
-//            m_shaderManager = renderer::ShaderManager::instance();
+
+            glGenVertexArrays(1, &m_vao);
+            glBindVertexArray(m_vao);
             
             logger::Logger::instance();
         }
@@ -37,12 +37,8 @@ namespace mayGL
             
             InputManager::release();
             m_inputManager = nullptr;
-            
-            renderer::Renderer::release();
-            m_renderer = nullptr;
 
-//            renderer::ShaderManager::release();
-//            m_shaderManager = nullptr;
+            glDeleteBuffers(1, &m_vao);
             
             for (auto page : m_pageStack)
             {
@@ -166,8 +162,6 @@ namespace mayGL
                 m_activePage->onDraw();
             }
             
-            m_renderer->draw();
-
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             

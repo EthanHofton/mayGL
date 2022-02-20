@@ -16,9 +16,8 @@ namespace mayGL
             vertex::VertexLayout *vLayout = new vertex::VertexLayout;
             vLayout->push(new vertex::VertexComponent("pos", vertex::position, 3, GL_FLOAT, GL_FALSE, offsetof(colliderVertex, m_pos)));
 
-            m_colliderMesh = new component::Mesh(t_parent, "collider_mesh", vLayout, GL_LINES);
+            m_colliderMesh = new component::Mesh(t_parent, "collider_mesh", vLayout);
             m_colliderMesh->visable(m_showCollider);
-            m_colliderMesh->loadShader("collider.vertex", "collider.fragment");
 
             getParent()->addComponent(m_colliderMesh);
             m_transform->addMesh(m_colliderMesh->getId());

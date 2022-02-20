@@ -25,6 +25,7 @@ namespace mayGL
         public:
             
             Texture(entity::Entity *t_parent, std::string t_id, std::string t_filename, std::string t_uniformId = "");
+            Texture(entity::Entity *t_parent, std::string t_id, glm::vec2 t_size);
             ~Texture();
             
             inline unsigned int getTextureId() { return m_textureId; }

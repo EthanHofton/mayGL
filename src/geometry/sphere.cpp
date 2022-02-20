@@ -69,12 +69,11 @@ namespace mayGL
             vLayout->push(new vertex::VertexComponent("normals", vertex::normals, 3, GL_FLOAT, GL_FALSE, offsetof(sphere_vertex, m_normals)));
             vLayout->push(new vertex::VertexComponent("texCoords", vertex::color, 2, GL_FLOAT, GL_FALSE, offsetof(sphere_vertex, m_textureCoords)));
             
-            addComponent(new component::Mesh(this, m_meshId, vLayout, GL_TRIANGLES));
+            addComponent(new component::Mesh(this, m_meshId, vLayout));
             addComponent(new component::Transform(this, m_meshTransformId));
             
             getSphereMesh()->setVertices((void*)&m_vertexData[0], (int)(sizeof(sphere_vertex)*m_vertexData.size()));
             getSphereMesh()->setIndices((void*)&m_indexData[0], (int)(sizeof(unsigned int)*m_indexData.size()));
-            getSphereMesh()->loadShader("geomerty/sphere/sphere.vertex", "geomerty/sphere/sphere.fragment");
             getSphereMeshTransform()->addMesh(m_meshId);
         }
 
