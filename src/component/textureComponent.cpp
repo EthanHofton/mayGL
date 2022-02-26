@@ -7,9 +7,10 @@ namespace mayGL
     {
         std::map<std::string, std::pair<int, int>> Texture::s_textureMap;
 
-        Texture::Texture(entity::Entity *t_parent, std::string t_id, glm::vec2 t_size) : Component(t_parent, texture, t_id)
+        Texture::Texture(entity::Entity *t_parent, std::string t_id, glm::vec2 t_size, std::string t_uniformId) : Component(t_parent, texture, t_id)
         {
             m_filename = "";
+            m_uniformId = (t_uniformId == "") ? (getParent()->getEntityId() + "texture") : t_uniformId;
             m_size = t_size;
             m_bitDepth = 0;
             m_previewImageArea = 4096;

@@ -21,6 +21,9 @@ namespace mayGL
             unsigned int m_indicesDataOffset;
             unsigned int m_indicesValueOffset;
             int m_objects;
+
+            std::map<int, int> m_textureUnits;
+            std::vector<component::Texture*> m_textures;
         };
 
         struct uboMatrices
@@ -83,12 +86,18 @@ namespace mayGL
             inline void disableFaceCulling() { m_cullFace = false; }
             inline void faceCull(int t_face) { glCullFace(t_face); }
 
+            // active
+            inline bool isActive() { return m_active; }
+            inline void active(bool t_active) { m_active = t_active; }
+
             // wireframe for batch
             inline void enableWireframe() { m_batchWireframe = true; }
             inline void disableWireframe() { m_batchWireframe = false; }
 
             inline void update() override {}
             void draw();
+
+            void imguiComponentInspector() override;
 
         private:
 
@@ -101,8 +110,11 @@ namespace mayGL
             std::string m_shader;
             vertex::VertexLayout *m_layout;
             std::vector<Mesh*> m_meshes;
+            float m_timePerDraw;
+            float m_timePerPush;
             bool m_batchWireframe;
             bool m_cullFace;
+            bool m_active;
 
             DrawCall m_drawCall;
         };

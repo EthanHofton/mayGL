@@ -106,6 +106,17 @@ namespace mayGL
                 m_uniformMap[t_unifromId] = glGetUniformLocation(m_shaderId, t_unifromId.c_str());
             }
         }
+
+        bool Shader::hasUniform(std::string t_uniformId)
+        {
+            return m_uniformMap.find(t_uniformId) != m_uniformMap.end();
+        }
+
+        void Shader::setUniform1i(std::string t_uniformId, int t_val)
+        {
+            CORE_TRACE("set uniform '{0}' with value '{1}'", t_uniformId, t_val);
+            m_uniform1iMap[t_uniformId] = t_val;
+        }
         
         void Shader::setUniform1f(std::string t_uniformId, float t_val)
         {
@@ -134,6 +145,13 @@ namespace mayGL
         void Shader::useShader()
         {
             glUseProgram(m_shaderId);
+
+            for (auto val : m_uniform1iMap)
+            {
+                unsigned int uniformLocation = getUniformLocation(val.first);
+                glUniform1i(uniformLocation, val.second);
+            }
+
             for (auto val : m_uniform1fMap)
             {
                 unsigned int uniformLocation = getUniformLocation(val.first);

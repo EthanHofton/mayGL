@@ -33,7 +33,9 @@ namespace mayGL
             
             unsigned int getUniformLocation(std::string t_unifromId);
             void addUniform(std::string t_unifromId);
+            bool hasUniform(std::string t_uniformId);
             
+            void setUniform1i(std::string t_uniformId, int t_val);
             void setUniform1f(std::string t_uniformId, float t_val);
             void setUniform2f(std::string t_uniformId, glm::vec2 t_val);
             void setUniform3f(std::string t_uniformId, glm::vec3 t_val);
@@ -65,6 +67,7 @@ namespace mayGL
             std::map<std::string, unsigned int> m_uniformMap;
             
             // -- uniform maps
+            std::map<std::string, int> m_uniform1iMap;
             std::map<std::string, float> m_uniform1fMap;
             std::map<std::string, glm::vec2> m_uniform2fMap;
             std::map<std::string, glm::vec3> m_uniform3fMap;
