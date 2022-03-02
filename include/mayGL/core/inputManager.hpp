@@ -62,8 +62,7 @@ namespace mayGL
             inline bool mouseMotion() { return (m_mouseMovement && !(ImGui::GetIO().WantCaptureMouse) && !m_disableInput); }
             inline void mouseMotion(bool t_m) { m_mouseMovement = t_m; }
             
-            inline void update()
-            { m_mouseState = SDL_GetMouseState((int*)&m_mPos[0], (int*)&m_mPos[1]); }
+            void update();
             inline void updatePrevInput()
             { memcpy(m_prevKeyState, m_keyboardStates, m_keyLeangh); m_prevMouseState = m_mouseState; }
             

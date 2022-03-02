@@ -144,5 +144,12 @@ namespace mayGL
                 m_dmPos.y = -(m_event.motion.yrel);
             }
         }
+
+        void InputManager::update()
+        {
+            int x,y;
+            m_mouseState = SDL_GetMouseState(&x, &y);
+            m_mPos = glm::vec2(x,y);
+        }
     }
 }

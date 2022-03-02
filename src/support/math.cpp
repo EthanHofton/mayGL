@@ -22,9 +22,9 @@ namespace mayGL
             return {worldSpace.x, worldSpace.y, worldSpace.z};
         }
         
-        float map(float t_x, float t_a, float t_b, float t_c, float t_d)
+        float map(float value, float min1, float max1, float min2, float max2) 
         {
-            return ( (t_x-t_a)/(t_b-t_a) * (t_d-t_c) + t_c );
+            return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
         }
 
         float pythag1f(float a, float b)

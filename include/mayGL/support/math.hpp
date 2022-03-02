@@ -29,7 +29,7 @@ namespace mayGL
         float radToDeg(float t_rad);
         
         glm::vec3 modelToWorld(glm::vec3 &t_modelSpace, glm::mat4 &t_modelMatrix);
-        float map(float t_x, float t_a, float t_b, float t_c, float t_d);
+        float map(float value, float min1, float max1, float min2, float max2);
         
         const glm::vec3 c_up = {0.0f, -1.0f, 0.0f};
         const glm::vec3 c_down = {0.0f, 1.0f, 0.0f};
